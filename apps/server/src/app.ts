@@ -9,6 +9,7 @@ import { citiesRoutes } from './routes/cities.routes.js';
 import { universitiesRoutes } from './routes/universities.routes.js';
 import { messagesRoutes } from './routes/messages.routes.js';
 import { reportRoutes } from './routes/report.routes.js';
+import { adminRoutes } from './routes/admin.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
 export const app: Express = express();
@@ -33,5 +34,6 @@ app.use('/api/universities', universitiesRoutes);
 app.use('/api/room', messagesRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/reports', apiLimiter, reportRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);

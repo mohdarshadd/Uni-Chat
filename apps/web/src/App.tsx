@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Landing } from './pages/Landing';
 import { Chat } from './pages/Chat';
+import { Admin } from './pages/Admin';
+import { AdminReports } from './pages/AdminReports';
+import { AdminUniversities } from './pages/AdminUniversities';
 import { useChatStore } from './store/useChatStore';
 
 function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -21,6 +24,9 @@ export function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/chat/:universityId" element={<Chat />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/universities" element={<AdminUniversities />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
