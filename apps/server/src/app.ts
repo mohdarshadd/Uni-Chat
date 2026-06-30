@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { citiesRoutes } from './routes/cities.routes.js';
 import { universitiesRoutes } from './routes/universities.routes.js';
+import { messagesRoutes } from './routes/messages.routes.js';
 
 export const app: Express = express();
 
@@ -27,5 +28,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/api/universities', universitiesRoutes);
+app.use('/api/room', messagesRoutes);
+app.use('/api/messages', messagesRoutes);
 
 app.use(errorHandler);
