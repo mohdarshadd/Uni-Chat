@@ -1,6 +1,6 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Copy, Trash2, Reply } from 'lucide-react';
+import { Heart, Copy, Trash2, Reply, Clock } from 'lucide-react';
 import type { Message } from '@campus-chat/shared';
 import { cn, getTime } from '../../lib/utils';
 import { useChatStore } from '../../store/useChatStore';
@@ -12,6 +12,26 @@ interface MessageBubbleProps {
   onLike: (messageId: string) => void;
 }
 
+function useCountdown(expiresAt: string) {
+  const [remaining, setRemaining] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const diff = new Date(expiresAt).getTime() - Date.now();
+      if (diff <= 0) return setRemaining('Expired');
+      const mins = Math.floor(diff / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      setRemaining(`${mins}:${secs.toString().padStart(2, '0')}`);
+    };
+
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, [expiresAt]);
+
+  return remaining;
+}
+
 export const MessageBubble = memo(function MessageBubble({
   message,
   onReply,
@@ -21,6 +41,7 @@ export const MessageBubble = memo(function MessageBubble({
   const [isHovered, setIsHovered] = useState(false);
   const sessionId = useChatStore((s) => s.sessionId);
   const isOwn = message.senderId === sessionId;
+  const countdown = useCountdown(message.expiresAt);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -54,6 +75,10 @@ export const MessageBubble = memo(function MessageBubble({
           </span>
           <span className="text-[10px] text-[var(--color-text-secondary)]">
             {getTime(message.createdAt)}
+          </span>
+          <span className="flex items-center gap-1 text-[10px] text-[var(--color-text-secondary)]">
+            <Clock size={10} />
+            {countdown}
           </span>
         </div>
 

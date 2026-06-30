@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { useAuth } from '../hooks/useAuth';
+import { useExpiryTimer } from '../hooks/useExpiryTimer';
 import { ChatTopBar } from '../components/chat/ChatTopBar';
 import { MessageList } from '../components/chat/MessageList';
 import { MessageInput } from '../components/chat/MessageInput';
@@ -9,6 +10,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { getSocket } from '../lib/socket';
 
 export function Chat() {
+  useExpiryTimer();
   const navigate = useNavigate();
   const { isLoading, isAuthenticated } = useAuth();
   const {

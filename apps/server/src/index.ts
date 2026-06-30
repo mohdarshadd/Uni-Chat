@@ -3,6 +3,7 @@ import { env } from './config/env.js';
 import { connectDatabase } from './config/database.js';
 import { app } from './app.js';
 import { initializeSocket } from './socket/index.js';
+import { startExpiryWatcher } from './services/expiry.service.js';
 
 const httpServer = createServer(app);
 
@@ -10,6 +11,8 @@ async function bootstrap(): Promise<void> {
   await connectDatabase();
 
   initializeSocket(httpServer);
+
+  startExpiryWatcher();
 
   httpServer.listen(env.PORT, () => {
     console.log(`[Server] Running on port ${env.PORT} in ${env.NODE_ENV} mode`);
