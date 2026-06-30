@@ -1,9 +1,10 @@
 import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Copy, Trash2, Reply, Clock } from 'lucide-react';
+import { Heart, Copy, Trash2, Reply, Clock, Flag } from 'lucide-react';
 import type { Message } from '@campus-chat/shared';
 import { cn, getTime } from '../../lib/utils';
 import { useChatStore } from '../../store/useChatStore';
+import { ReportModal } from './ReportModal';
 
 interface MessageBubbleProps {
   message: Message;
@@ -39,6 +40,7 @@ export const MessageBubble = memo(function MessageBubble({
   onLike,
 }: MessageBubbleProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const sessionId = useChatStore((s) => s.sessionId);
   const isOwn = message.senderId === sessionId;
   const countdown = useCountdown(message.expiresAt);
@@ -137,9 +139,23 @@ export const MessageBubble = memo(function MessageBubble({
             >
               <Trash2 size={14} />
             </button>
-          ) : null}
+          ) : (
+            <button
+              onClick={() => setShowReport(true)}
+              className="text-[var(--color-text-secondary)] hover:text-orange-500 transition-colors"
+              title="Report"
+            >
+              <Flag size={14} />
+            </button>
+          )}
         </div>
       </div>
+
+      <ReportModal
+        isOpen={showReport}
+        onClose={() => setShowReport(false)}
+        messageId={message.id}
+      />
     </motion.div>
   );
 });

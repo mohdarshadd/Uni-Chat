@@ -2,6 +2,8 @@ import type { Server, Socket } from 'socket.io';
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '@campus-chat/shared';
 import { messageContentSchema } from '@campus-chat/shared';
 import { createMessage, deleteMessage, toggleLike } from '../../services/message.service.js';
+import { cleanMessage } from '../../services/filter.service.js';
+import { isMuted } from '../../services/mute.service.js';
 
 export function registerMessageHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>,
@@ -15,18 +17,25 @@ export function registerMessageHandlers(
         return;
       }
 
+      if (isMuted(socket.data.sessionId, universityId)) {
+        ack({ success: false, error: 'You are muted in this room' });
+        return;
+      }
+
       const parsed = messageContentSchema.safeParse(data.content);
       if (!parsed.success) {
         ack({ success: false, error: parsed.error.errors[0].message });
         return;
       }
 
+      const cleaned = cleanMessage(parsed.data);
+
       const message = await createMessage({
         roomId: universityId,
         senderId: socket.data.sessionId,
         senderName: socket.data.displayName,
         avatar: socket.data.avatar,
-        content: parsed.data,
+        content: cleaned,
         replyTo: data.replyTo,
       });
 
