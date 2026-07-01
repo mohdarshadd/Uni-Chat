@@ -2,23 +2,34 @@ import { useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
-import type { Message } from '@campus-chat/shared';
+import { PollBubble } from './PollBubble';
+import { AnnouncementBubble } from './AnnouncementBubble';
+import type { Message, Poll } from '@campus-chat/shared';
+import type { AnnouncementItem } from '../../store/useChatStore';
 import { useChatStore } from '../../store/useChatStore';
 
 interface MessageListProps {
   messages: Message[];
+  polls: Poll[];
+  announcements: AnnouncementItem[];
   onReply: (message: Message) => void;
   onDelete: (messageId: string) => void;
   onLike: (messageId: string) => void;
+  onVote: (pollId: string, optionId: string) => void;
+  onDismissAnnouncement?: (id: string) => void;
   onLoadMore: () => void;
   hasMore: boolean;
 }
 
 export function MessageList({
   messages,
+  polls,
+  announcements,
   onReply,
   onDelete,
   onLike,
+  onVote,
+  onDismissAnnouncement,
   onLoadMore,
   hasMore,
 }: MessageListProps) {
@@ -54,6 +65,16 @@ export function MessageList({
         </div>
       ) : null}
 
+      {/* Announcements */}
+      {announcements.map((ann) => (
+        <AnnouncementBubble
+          key={ann.id}
+          announcement={ann}
+          onDismiss={onDismissAnnouncement}
+        />
+      ))}
+
+      {/* Messages */}
       <AnimatePresence initial={false}>
         {messages.map((message) => (
           <MessageBubble
@@ -65,6 +86,11 @@ export function MessageList({
           />
         ))}
       </AnimatePresence>
+
+      {/* Polls */}
+      {polls.map((poll) => (
+        <PollBubble key={poll.id} poll={poll} onVote={onVote} />
+      ))}
 
       {typingUsers.length > 0 ? (
         <TypingIndicator users={typingUsers} />

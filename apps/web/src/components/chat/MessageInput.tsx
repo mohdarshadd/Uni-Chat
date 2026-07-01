@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { Send, Smile, Reply as ReplyIcon, Image, X } from 'lucide-react';
+import { Send, Smile, Reply as ReplyIcon, Image, BarChart3, X } from 'lucide-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import type { Message } from '@campus-chat/shared';
@@ -21,12 +21,13 @@ interface GifResult {
 interface MessageInputProps {
   onSend: (content: string, replyTo?: string | null) => void;
   onSendGif?: (gif: GifResult, replyTo?: string | null) => void;
+  onCreatePoll?: () => void;
   replyTo: Message | null;
   onClearReply: () => void;
   isLoading?: boolean;
 }
 
-export function MessageInput({ onSend, onSendGif, replyTo, onClearReply, isLoading }: MessageInputProps) {
+export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClearReply, isLoading }: MessageInputProps) {
   const [content, setContent] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
   const [showGif, setShowGif] = useState(false);
@@ -105,6 +106,13 @@ export function MessageInput({ onSend, onSendGif, replyTo, onClearReply, isLoadi
             )}>
               {content.length}/{MAX_MESSAGE_LENGTH}
             </span>
+            <button
+              onClick={onCreatePoll}
+              className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
+              title="Create Poll"
+            >
+              <BarChart3 size={18} />
+            </button>
             <button
               onClick={() => { setShowEmoji(false); setShowGif(!showGif); }}
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"

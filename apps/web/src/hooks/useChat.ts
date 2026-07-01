@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { getSocket, connectSocket } from '../lib/socket';
 import { api } from '../lib/api';
 import { useChatStore } from '../store/useChatStore';
-import type { Message, MessageContentType } from '@campus-chat/shared';
+import type { Message, MessageContentType, Poll } from '@campus-chat/shared';
+import type { AnnouncementItem } from '../store/useChatStore';
 
 export function useChat() {
   const { universityId } = useParams<{ universityId: string }>();
@@ -22,6 +23,13 @@ export function useChat() {
     setUsers,
     setConnected,
     setTypingUsers,
+    polls,
+    addPoll,
+    updatePoll,
+    setPolls,
+    announcements,
+    addAnnouncement,
+    setAnnouncements,
   } = useChatStore();
 
   const joinRoom = useCallback(async () => {
@@ -60,6 +68,18 @@ export function useChat() {
       setUniversity(data.university);
       setUsers(data.users, data.onlineCount);
       setMessages(data.messages);
+    });
+
+    socket.on('poll:new', (poll) => {
+      addPoll(poll);
+    });
+
+    socket.on('poll:updated', (poll) => {
+      updatePoll(poll);
+    });
+
+    socket.on('announcement:new', (data) => {
+      addAnnouncement({ id: Date.now().toString(), ...data });
     });
 
     socket.on('room:members', (data) => {
@@ -109,9 +129,12 @@ export function useChat() {
       socket.off('message:expired');
       socket.off('message:deleted');
       socket.off('message:liked');
+      socket.off('poll:new');
+      socket.off('poll:updated');
+      socket.off('announcement:new');
       socket.off('typing:update');
     };
-  }, [universityId, joinRoom, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers]);
+  }, [universityId, joinRoom, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
 
   const sendMessage = useCallback(
     (content: string, replyToId?: string | null, gifData?: { url: string; title?: string }) => {
@@ -161,6 +184,31 @@ export function useChat() {
     [universityId],
   );
 
+  const createPoll = useCallback((question: string, options: string[]) => {
+    const socket = getSocket();
+    if (!socket.connected) return;
+    socket.emit('poll:create', { question, options }, (response) => {
+      if (!response.success) {
+        console.error('Failed to create poll:', response.error);
+      }
+    });
+  }, []);
+
+  const votePoll = useCallback((pollId: string, optionId: string) => {
+    const socket = getSocket();
+    if (!socket.connected) return;
+    socket.emit('poll:vote', { pollId, optionId }, (response) => {
+      if (!response.success) {
+        console.error('Failed to vote:', response.error);
+      }
+    });
+  }, []);
+
+  const dismissAnnouncement = useCallback((id: string) => {
+    const state = useChatStore.getState();
+    state.setAnnouncements(state.announcements.filter((a) => a.id !== id));
+  }, []);
+
   const loadMore = useCallback(async () => {
     if (!hasMore || messages.length === 0) return;
 
@@ -185,7 +233,12 @@ export function useChat() {
     deleteMessage,
     likeMessage,
     handleTyping,
+    createPoll,
+    votePoll,
+    dismissAnnouncement,
     loadMore,
     leaveRoom: joinRoom,
+    polls,
+    announcements,
   };
 }

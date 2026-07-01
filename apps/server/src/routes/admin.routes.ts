@@ -158,6 +158,36 @@ router.delete('/cities/:id', async (req: Request, res: Response) => {
   res.json({ success: true });
 });
 
+// ─── Announcements ─────────────────────────────────────────
+router.post('/announcements', async (req: Request, res: Response) => {
+  const { roomId, content } = req.body;
+  if (!roomId || !content) {
+    throw new AppError(400, 'roomId and content required', 'INVALID_INPUT');
+  }
+
+  const university = await University.findById(roomId);
+  if (!university) throw new AppError(404, 'University not found', 'NOT_FOUND');
+
+  const { createAnnouncement } = await import('../services/announcement.service.js');
+  const announcement = createAnnouncement({
+    roomId,
+    content,
+    createdBy: 'admin',
+    createdByName: 'Admin',
+  });
+
+  const { io } = await import('../socket/index.js');
+  if (io) {
+    io.to(roomId).emit('announcement:new', {
+      content: announcement.content,
+      createdByName: announcement.createdByName,
+      createdAt: announcement.createdAt,
+    });
+  }
+
+  res.json({ success: true, announcement });
+});
+
 // ─── Active Users / Rooms ─────────────────────────────────
 router.get('/rooms', async (_req: Request, res: Response) => {
   const universities = await University.find({ isActive: true })

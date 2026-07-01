@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { useAuth } from '../hooks/useAuth';
@@ -5,6 +6,7 @@ import { useExpiryTimer } from '../hooks/useExpiryTimer';
 import { ChatTopBar } from '../components/chat/ChatTopBar';
 import { MessageList } from '../components/chat/MessageList';
 import { MessageInput } from '../components/chat/MessageInput';
+import { CreatePollModal } from '../components/chat/CreatePollModal';
 import { useChatStore } from '../store/useChatStore';
 import { Skeleton } from '../components/ui/Skeleton';
 import { getSocket } from '../lib/socket';
@@ -22,11 +24,17 @@ export function Chat() {
     deleteMessage,
     likeMessage,
     handleTyping,
+    createPoll,
+    votePoll,
+    dismissAnnouncement,
     loadMore,
+    polls,
+    announcements,
   } = useChat();
 
   const { university, onlineCount, messages } = useChatStore();
   const { rename } = useAuth();
+  const [showPollModal, setShowPollModal] = useState(false);
 
   const handleLeave = () => {
     getSocket().disconnect();
@@ -97,9 +105,13 @@ export function Chat() {
 
       <MessageList
         messages={messages}
+        polls={polls}
+        announcements={announcements}
         onReply={setReplyTo}
         onDelete={deleteMessage}
         onLike={likeMessage}
+        onVote={votePoll}
+        onDismissAnnouncement={dismissAnnouncement}
         onLoadMore={loadMore}
         hasMore={hasMore}
       />
@@ -107,8 +119,15 @@ export function Chat() {
       <MessageInput
         onSend={sendMessage}
         onSendGif={(gif, replyToId) => sendMessage(gif.title || '', replyToId, { url: gif.url, title: gif.title })}
+        onCreatePoll={() => setShowPollModal(true)}
         replyTo={replyTo}
         onClearReply={() => setReplyTo(null)}
+      />
+
+      <CreatePollModal
+        isOpen={showPollModal}
+        onClose={() => setShowPollModal(false)}
+        onCreate={createPoll}
       />
     </div>
   );

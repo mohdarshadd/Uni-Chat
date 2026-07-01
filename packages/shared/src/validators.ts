@@ -40,3 +40,16 @@ export const universitySearchSchema = z.object({
   query: z.string().min(1).max(100),
   cityId: z.string().optional(),
 });
+
+export const pollCreateSchema = z.object({
+  question: z.string().min(1, 'Question is required').max(200),
+  options: z
+    .array(z.string().min(1, 'Option cannot be empty').max(100))
+    .min(2, 'At least 2 options required')
+    .max(10, 'At most 10 options allowed'),
+});
+
+export const pollVoteSchema = z.object({
+  pollId: z.string().min(1),
+  optionId: z.string().min(1),
+});

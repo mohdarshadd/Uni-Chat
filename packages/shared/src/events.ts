@@ -1,4 +1,4 @@
-import type { Message, MessageContentType, User, University } from './types';
+import type { Message, MessageContentType, Poll, User, University } from './types';
 
 // ─── Client → Server Events ──────────────────────────────
 export interface ClientToServerEvents {
@@ -15,6 +15,14 @@ export interface ClientToServerEvents {
   'message:like': (data: { messageId: string }) => void;
   'typing:start': (data: { universityId: string }) => void;
   'typing:stop': (data: { universityId: string }) => void;
+  'poll:create': (
+    data: { question: string; options: string[] },
+    ack: (response: { success: boolean; poll?: Poll; error?: string }) => void,
+  ) => void;
+  'poll:vote': (
+    data: { pollId: string; optionId: string },
+    ack: (response: { success: boolean; poll?: Poll; error?: string }) => void,
+  ) => void;
 }
 
 // ─── Server → Client Events ──────────────────────────────
@@ -31,6 +39,9 @@ export interface ServerToClientEvents {
   'message:deleted': (data: { messageId: string }) => void;
   'message:liked': (data: { messageId: string; likes: string[] }) => void;
   'typing:update': (data: { userId: string; displayName: string; isTyping: boolean }) => void;
+  'poll:new': (data: Poll) => void;
+  'poll:updated': (data: Poll) => void;
+  'announcement:new': (data: { content: string; createdByName: string; createdAt: string }) => void;
   'error': (data: { code: string; message: string }) => void;
 }
 

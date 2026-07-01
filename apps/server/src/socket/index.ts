@@ -6,6 +6,7 @@ import { socketAuthMiddleware } from './middlewares/auth.middleware.js';
 import { registerRoomHandlers } from './handlers/room.handler.js';
 import { registerMessageHandlers } from './handlers/message.handler.js';
 import { registerTypingHandlers } from './handlers/typing.handler.js';
+import { registerPollHandlers } from './handlers/poll.handler.js';
 
 export let io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
 
@@ -31,6 +32,7 @@ export function initializeSocket(httpServer: HttpServer): void {
     registerRoomHandlers(io, socket);
     registerMessageHandlers(io, socket);
     registerTypingHandlers(io, socket);
+    registerPollHandlers(io, socket);
 
     socket.on('disconnecting', () => {
       const rooms = Array.from(socket.rooms).filter((r) => r !== socket.id);

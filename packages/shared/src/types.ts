@@ -9,6 +9,26 @@ export interface User {
 
 export type MessageContentType = 'text' | 'gif';
 
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: string[];
+  voterCount: number;
+}
+
+export interface Poll {
+  id: string;
+  roomId: string;
+  question: string;
+  options: PollOption[];
+  createdBy: string;
+  createdByName: string;
+  totalVotes: number;
+  isClosed: boolean;
+  createdAt: string;
+  expiresAt: string;
+}
+
 export interface Message {
   id: string;
   roomId: string;
@@ -54,9 +74,10 @@ export interface Report {
 
 export interface Announcement {
   id: string;
-  universityId: string;
+  roomId: string;
   content: string;
-  isPinned: boolean;
+  createdBy: string;
+  createdByName: string;
   createdAt: string;
 }
 

@@ -1,5 +1,12 @@
 import { create } from 'zustand';
-import type { Message, User, University } from '@campus-chat/shared';
+import type { Message, Poll, User, University } from '@campus-chat/shared';
+
+export interface AnnouncementItem {
+  id: string;
+  content: string;
+  createdByName: string;
+  createdAt: string;
+}
 
 interface ChatState {
   // Connection
@@ -21,6 +28,17 @@ interface ChatState {
   removeMessage: (messageId: string) => void;
   updateMessageLikes: (messageId: string, likes: string[]) => void;
   setMessages: (messages: Message[]) => void;
+
+  // Polls
+  polls: Poll[];
+  addPoll: (poll: Poll) => void;
+  updatePoll: (poll: Poll) => void;
+  setPolls: (polls: Poll[]) => void;
+
+  // Announcements
+  announcements: AnnouncementItem[];
+  addAnnouncement: (announcement: AnnouncementItem) => void;
+  setAnnouncements: (announcements: AnnouncementItem[]) => void;
 
   // Typing
   typingUsers: { userId: string; displayName: string }[];
@@ -67,6 +85,21 @@ export const useChatStore = create<ChatState>((set) => ({
       ),
     })),
   setMessages: (messages) => set({ messages }),
+
+  // Polls
+  polls: [],
+  addPoll: (poll) => set((state) => ({ polls: [...state.polls, poll] })),
+  updatePoll: (poll) =>
+    set((state) => ({
+      polls: state.polls.map((p) => (p.id === poll.id ? poll : p)),
+    })),
+  setPolls: (polls) => set({ polls }),
+
+  // Announcements
+  announcements: [],
+  addAnnouncement: (announcement) =>
+    set((state) => ({ announcements: [...state.announcements, announcement] })),
+  setAnnouncements: (announcements) => set({ announcements }),
 
   // Typing
   typingUsers: [],
