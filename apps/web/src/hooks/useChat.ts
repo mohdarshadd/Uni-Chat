@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getSocket, connectSocket } from '../lib/socket';
 import { api } from '../lib/api';
 import { useChatStore } from '../store/useChatStore';
-import type { Message } from '@campus-chat/shared';
+import type { Message, MessageContentType } from '@campus-chat/shared';
 
 export function useChat() {
   const { universityId } = useParams<{ universityId: string }>();
@@ -114,11 +114,17 @@ export function useChat() {
   }, [universityId, joinRoom, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers]);
 
   const sendMessage = useCallback(
-    (content: string, replyToId?: string | null) => {
+    (content: string, replyToId?: string | null, gifData?: { url: string; title?: string }) => {
       const socket = getSocket();
       if (!socket.connected) return;
 
-      socket.emit('message:send', { content, replyTo: replyToId }, (response) => {
+      const payload: { content: string; contentType?: MessageContentType; mediaUrl?: string; replyTo?: string | null } = { content, replyTo: replyToId };
+      if (gifData) {
+        payload.contentType = 'gif';
+        payload.mediaUrl = gifData.url;
+      }
+
+      socket.emit('message:send', payload, (response) => {
         if (!response.success) {
           console.error('Failed to send message:', response.error);
         }

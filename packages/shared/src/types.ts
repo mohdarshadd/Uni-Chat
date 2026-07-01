@@ -7,6 +7,8 @@ export interface User {
   lastActive: string;
 }
 
+export type MessageContentType = 'text' | 'gif';
+
 export interface Message {
   id: string;
   roomId: string;
@@ -14,6 +16,8 @@ export interface Message {
   senderName: string;
   avatar: string;
   content: string;
+  contentType: MessageContentType;
+  mediaUrl?: string;
   replyTo: string | null;
   likes: string[];
   createdAt: string;

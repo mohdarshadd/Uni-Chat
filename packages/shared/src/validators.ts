@@ -12,8 +12,15 @@ export const messageContentSchema = z
   .max(1000, 'Message must be at most 1000 characters')
   .transform((s) => s.trim());
 
+export const gifUrlSchema = z
+  .string()
+  .url('Invalid GIF URL')
+  .regex(/\.gif/i, 'URL must point to a GIF');
+
 export const messageSendSchema = z.object({
   content: messageContentSchema,
+  contentType: z.enum(['text', 'gif']).optional().default('text'),
+  mediaUrl: gifUrlSchema.optional(),
   replyTo: z.string().nullable().optional(),
 });
 

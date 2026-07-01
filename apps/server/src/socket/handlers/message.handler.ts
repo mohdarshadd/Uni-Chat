@@ -22,20 +22,30 @@ export function registerMessageHandlers(
         return;
       }
 
-      const parsed = messageContentSchema.safeParse(data.content);
-      if (!parsed.success) {
-        ack({ success: false, error: parsed.error.errors[0].message });
-        return;
-      }
+      const isGif = data.contentType === 'gif';
 
-      const cleaned = cleanMessage(parsed.data);
+      if (isGif) {
+        if (!data.mediaUrl) {
+          ack({ success: false, error: 'GIF URL is required' });
+          return;
+        }
+      } else {
+        const parsed = messageContentSchema.safeParse(data.content);
+        if (!parsed.success) {
+          ack({ success: false, error: parsed.error.errors[0].message });
+          return;
+        }
+        data.content = cleanMessage(parsed.data);
+      }
 
       const message = await createMessage({
         roomId: universityId,
         senderId: socket.data.sessionId,
         senderName: socket.data.displayName,
         avatar: socket.data.avatar,
-        content: cleaned,
+        content: isGif ? data.content || '' : cleanMessage(data.content),
+        contentType: isGif ? 'gif' : 'text',
+        mediaUrl: isGif ? data.mediaUrl : undefined,
         replyTo: data.replyTo,
       });
 

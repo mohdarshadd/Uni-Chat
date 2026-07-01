@@ -90,16 +90,40 @@ export const MessageBubble = memo(function MessageBubble({
           </div>
         ) : null}
 
-        <div
-          className={cn(
-            'rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
-            isOwn
-              ? 'bg-brand-500 text-white rounded-tr-md'
-              : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)] rounded-tl-md',
-          )}
-        >
-          {message.content}
-        </div>
+        {message.contentType === 'gif' && message.mediaUrl ? (
+          <div className={cn(
+            'overflow-hidden rounded-2xl',
+            isOwn ? 'rounded-tr-md' : 'rounded-tl-md',
+          )}>
+            <img
+              src={message.mediaUrl}
+              alt={message.content || 'GIF'}
+              className="max-w-[280px] h-auto object-cover"
+              loading="lazy"
+            />
+            {message.content ? (
+              <p className={cn(
+                'px-3.5 py-2 text-sm leading-relaxed',
+                isOwn
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)]',
+              )}>
+                {message.content}
+              </p>
+            ) : null}
+          </div>
+        ) : (
+          <div
+            className={cn(
+              'rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
+              isOwn
+                ? 'bg-brand-500 text-white rounded-tr-md'
+                : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)] rounded-tl-md',
+            )}
+          >
+            {message.content}
+          </div>
+        )}
 
         <div className={cn('mt-1 flex items-center gap-2', isHovered ? 'opacity-100' : 'opacity-0', 'transition-opacity')}>
           <button

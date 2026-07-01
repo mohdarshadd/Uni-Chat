@@ -1,11 +1,15 @@
 import mongoose, { Schema, type Document } from 'mongoose';
 
+export type MessageContentType = 'text' | 'gif';
+
 export interface IMessage extends Document {
   roomId: mongoose.Types.ObjectId;
   senderId: string;
   senderName: string;
   avatar: string;
   content: string;
+  contentType: MessageContentType;
+  mediaUrl?: string;
   replyTo: mongoose.Types.ObjectId | null;
   likes: string[];
   createdAt: Date;
@@ -19,6 +23,8 @@ const messageSchema = new Schema<IMessage>(
     senderName: { type: String, required: true },
     avatar: { type: String, default: '' },
     content: { type: String, required: true, maxlength: 1000 },
+    contentType: { type: String, enum: ['text', 'gif'], default: 'text' },
+    mediaUrl: { type: String, default: '' },
     replyTo: { type: Schema.Types.ObjectId, ref: 'Message', default: null },
     likes: [{ type: String }],
     createdAt: { type: Date, default: Date.now },

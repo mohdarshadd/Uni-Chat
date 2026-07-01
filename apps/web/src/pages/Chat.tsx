@@ -106,6 +106,7 @@ export function Chat() {
 
       <MessageInput
         onSend={sendMessage}
+        onSendGif={(gif, replyToId) => sendMessage(gif.title || '', replyToId, { url: gif.url, title: gif.title })}
         replyTo={replyTo}
         onClearReply={() => setReplyTo(null)}
       />

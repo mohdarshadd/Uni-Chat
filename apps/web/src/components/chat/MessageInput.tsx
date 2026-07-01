@@ -1,23 +1,35 @@
 import { useState, useRef, useCallback } from 'react';
-import { Send, Smile, Reply as ReplyIcon, X } from 'lucide-react';
+import { Send, Smile, Reply as ReplyIcon, Image, X } from 'lucide-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import type { Message } from '@campus-chat/shared';
 import { MAX_MESSAGE_LENGTH } from '@campus-chat/shared';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
+import { GifPicker } from './GifPicker';
 import { motion, AnimatePresence } from 'framer-motion';
+
+interface GifResult {
+  id: string;
+  url: string;
+  previewUrl: string;
+  title: string;
+  width: number;
+  height: number;
+}
 
 interface MessageInputProps {
   onSend: (content: string, replyTo?: string | null) => void;
+  onSendGif?: (gif: GifResult, replyTo?: string | null) => void;
   replyTo: Message | null;
   onClearReply: () => void;
   isLoading?: boolean;
 }
 
-export function MessageInput({ onSend, replyTo, onClearReply, isLoading }: MessageInputProps) {
+export function MessageInput({ onSend, onSendGif, replyTo, onClearReply, isLoading }: MessageInputProps) {
   const [content, setContent] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
+  const [showGif, setShowGif] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = useCallback(() => {
@@ -30,6 +42,12 @@ export function MessageInput({ onSend, replyTo, onClearReply, isLoading }: Messa
     setShowEmoji(false);
     inputRef.current?.focus();
   }, [content, isLoading, onSend, replyTo, onClearReply]);
+
+  const handleGifSelect = useCallback((gif: GifResult) => {
+    onSendGif?.(gif, replyTo?.id ?? null);
+    onClearReply();
+    inputRef.current?.focus();
+  }, [onSendGif, replyTo, onClearReply]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -88,7 +106,14 @@ export function MessageInput({ onSend, replyTo, onClearReply, isLoading }: Messa
               {content.length}/{MAX_MESSAGE_LENGTH}
             </span>
             <button
-              onClick={() => setShowEmoji(!showEmoji)}
+              onClick={() => { setShowEmoji(false); setShowGif(!showGif); }}
+              className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
+              title="GIF"
+            >
+              <Image size={18} />
+            </button>
+            <button
+              onClick={() => { setShowGif(false); setShowEmoji(!showEmoji); }}
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)] transition-colors"
             >
               <Smile size={18} />
@@ -106,6 +131,12 @@ export function MessageInput({ onSend, replyTo, onClearReply, isLoading }: Messa
           <Send size={18} />
         </Button>
       </div>
+
+      <GifPicker
+        isOpen={showGif}
+        onClose={() => setShowGif(false)}
+        onSelect={handleGifSelect}
+      />
 
       <AnimatePresence>
         {showEmoji ? (

@@ -1,12 +1,16 @@
 import { Message } from '../models/Message.js';
 import { MESSAGE_TTL_MINUTES, MESSAGES_PER_PAGE } from '@campus-chat/shared';
 
+import type { MessageContentType } from '../models/Message.js';
+
 export interface CreateMessageInput {
   roomId: string;
   senderId: string;
   senderName: string;
   avatar: string;
   content: string;
+  contentType?: MessageContentType;
+  mediaUrl?: string;
   replyTo?: string | null;
 }
 
@@ -17,6 +21,8 @@ export interface MessageResponse {
   senderName: string;
   avatar: string;
   content: string;
+  contentType: MessageContentType;
+  mediaUrl?: string;
   replyTo: string | null;
   likes: string[];
   createdAt: string;
@@ -31,6 +37,8 @@ function toResponse(msg: Record<string, any>): MessageResponse {
     senderName: msg.senderName,
     avatar: msg.avatar,
     content: msg.content,
+    contentType: msg.contentType ?? 'text',
+    mediaUrl: msg.mediaUrl || undefined,
     replyTo: msg.replyTo?.toString() ?? null,
     likes: msg.likes ?? [],
     createdAt: new Date(msg.createdAt).toISOString(),
@@ -48,6 +56,8 @@ export async function createMessage(input: CreateMessageInput): Promise<MessageR
     senderName: input.senderName,
     avatar: input.avatar,
     content: input.content,
+    contentType: input.contentType ?? 'text',
+    mediaUrl: input.mediaUrl ?? '',
     replyTo: input.replyTo || null,
     likes: [],
     createdAt: now,

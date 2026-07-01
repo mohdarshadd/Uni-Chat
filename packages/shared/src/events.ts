@@ -1,4 +1,4 @@
-import type { Message, User, University } from './types';
+import type { Message, MessageContentType, User, University } from './types';
 
 // ─── Client → Server Events ──────────────────────────────
 export interface ClientToServerEvents {
@@ -8,7 +8,7 @@ export interface ClientToServerEvents {
   ) => void;
   'room:leave': (data: { universityId: string }) => void;
   'message:send': (
-    data: { content: string; replyTo?: string | null },
+    data: { content: string; contentType?: MessageContentType; mediaUrl?: string; replyTo?: string | null },
     ack: (response: { success: boolean; message?: Message; error?: string }) => void,
   ) => void;
   'message:delete': (data: { messageId: string }) => void;
