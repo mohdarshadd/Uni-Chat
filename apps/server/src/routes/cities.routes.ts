@@ -1,5 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { City } from '../models/City.js';
+import { State } from '../models/State.js';
+import { Country } from '../models/Country.js';
 
 const router = Router();
 
