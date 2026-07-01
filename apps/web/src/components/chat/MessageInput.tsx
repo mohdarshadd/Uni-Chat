@@ -73,7 +73,7 @@ export function MessageInput({ onSend, onSendGif, replyTo, onClearReply, isLoadi
           >
             <ReplyIcon size={14} className="text-brand-500 flex-shrink-0" />
             <span className="flex-1 truncate text-sm text-[var(--color-text-secondary)]">
-              Replying to <strong className="text-[var(--color-text)]">{replyTo.senderName}</strong>: {replyTo.content}
+              Replying to <strong className="text-[var(--color-text)]">{replyTo.senderName}</strong>: {replyTo.contentType === 'gif' ? 'a GIF' : replyTo.content}
             </span>
             <button onClick={onClearReply} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)]">
               <X size={16} />
