@@ -4,8 +4,18 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
+// Register all models before any routes use them
+import './models/Country.js';
+import './models/State.js';
+import './models/City.js';
+import './models/University.js';
+import './models/AnonymousUser.js';
+import './models/Message.js';
+import './models/Report.js';
+import './models/Poll.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { citiesRoutes } from './routes/cities.routes.js';
+import { countriesRoutes } from './routes/countries.routes.js';
 import { universitiesRoutes } from './routes/universities.routes.js';
 import { messagesRoutes } from './routes/messages.routes.js';
 import { reportRoutes } from './routes/report.routes.js';
@@ -29,6 +39,7 @@ app.get('/api/health', (_req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/countries', countriesRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/api/universities', universitiesRoutes);
 app.use('/api/room', messagesRoutes);

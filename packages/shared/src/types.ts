@@ -44,6 +44,12 @@ export interface Message {
   expiresAt: string;
 }
 
+export interface Country {
+  id: string;
+  name: string;
+  code: string;
+}
+
 export interface University {
   id: string;
   name: string;

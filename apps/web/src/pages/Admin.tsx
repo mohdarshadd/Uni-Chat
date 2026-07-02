@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare, Users, Building2, Flag, Activity,
-  TrendingUp, BarChart3, Settings, Megaphone, CheckCircle,
+  TrendingUp, BarChart3, Settings, Megaphone, CheckCircle, Lock,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Button } from '../components/ui/Button';
@@ -42,25 +42,21 @@ function StatCard({ icon: Icon, label, value, color }: {
 export function Admin() {
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const [rooms, setRooms] = useState<Room[] | null>(null);
   const [annRoomId, setAnnRoomId] = useState('');
   const [annContent, setAnnContent] = useState('');
   const [annSending, setAnnSending] = useState(false);
   const [annSent, setAnnSent] = useState(false);
-  const adminKey = sessionStorage.getItem('admin-key');
+  const [adminKey, setAdminKey] = useState<string | null>(() => sessionStorage.getItem('admin-key'));
+  const [authError, setAuthError] = useState('');
+  const [loginKey, setLoginKey] = useState('');
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!adminKey) {
-      const key = prompt('Enter admin key:');
-      if (key) {
-        sessionStorage.setItem('admin-key', key);
-        window.location.reload();
-      } else {
-        navigate('/');
-      }
-      return;
-    }
+    if (fetchedRef.current) return;
+    if (!adminKey) return;
 
+    fetchedRef.current = true;
     Promise.all([
       api.get('/api/admin/analytics', { headers: { 'admin-key': adminKey } }),
       api.get('/api/admin/rooms', { headers: { 'admin-key': adminKey } }),
@@ -69,27 +65,56 @@ export function Admin() {
       setRooms(roomsRes.data);
     }).catch(() => {
       sessionStorage.removeItem('admin-key');
-      navigate('/');
+      setAdminKey(null);
+      setAuthError('Invalid admin key or server unreachable');
+      fetchedRef.current = false;
     });
-  }, [adminKey, navigate]);
+  }, [adminKey]);
 
-  const handleSendAnnouncement = async () => {
-    if (!annRoomId || !annContent.trim()) return;
-    setAnnSending(true);
-    setAnnSent(false);
-    try {
-      await api.post('/api/admin/announcements', { roomId: annRoomId, content: annContent.trim() }, {
-        headers: { 'admin-key': adminKey },
-      });
-      setAnnSent(true);
-      setAnnContent('');
-      setTimeout(() => setAnnSent(false), 3000);
-    } catch {
-      // silent
-    } finally {
-      setAnnSending(false);
-    }
+  const handleLogin = () => {
+    if (!loginKey.trim()) return;
+    sessionStorage.setItem('admin-key', loginKey.trim());
+    setAdminKey(loginKey.trim());
+    setAuthError('');
+    setLoginKey('');
+    fetchedRef.current = false;
   };
+
+  // Login screen
+  if (!adminKey) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)]">
+        <div className="glass w-full max-w-sm rounded-xl border border-[var(--color-border)] p-8 text-center">
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500/10">
+            <Lock className="h-7 w-7 text-brand-500" />
+          </div>
+          <h1 className="mb-2 text-xl font-bold text-[var(--color-text)]">Admin Access</h1>
+          <p className="mb-6 text-sm text-[var(--color-text-secondary)]">Enter your admin key to continue</p>
+          {authError ? (
+            <p className="mb-4 text-sm text-red-500">{authError}</p>
+          ) : null}
+          <input
+            type="password"
+            value={loginKey}
+            onChange={(e) => setLoginKey(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            placeholder="Admin key"
+            autoFocus
+            className="mb-4 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-secondary)] focus:border-brand-500 focus:outline-none"
+          />
+          <Button onClick={handleLogin} disabled={!loginKey.trim()} className="w-full">
+            Sign In
+          </Button>
+          <button
+            onClick={() => navigate('/')}
+            className="mt-4 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+          >
+            Back to home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!analytics) {
     return (
@@ -137,7 +162,6 @@ export function Admin() {
           <StatCard icon={TrendingUp} label="Active Today" value={analytics.activeToday} color="bg-cyan-500" />
         </div>
 
-        {/* Announcement Form */}
         <section className="glass rounded-xl border border-[var(--color-border)] p-6">
           <div className="mb-4 flex items-center gap-2">
             <Megaphone size={18} className="text-orange-500" />
@@ -153,7 +177,7 @@ export function Admin() {
                 className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2.5 text-sm text-[var(--color-text)]"
               >
                 <option value="">Select a room...</option>
-                {rooms.map((room) => (
+                {rooms?.map((room) => (
                   <option key={room.id} value={room.id}>
                     {room.name} ({room.memberCount} online)
                   </option>
@@ -175,7 +199,18 @@ export function Admin() {
 
             <div className="flex items-center gap-3">
               <Button
-                onClick={handleSendAnnouncement}
+                onClick={() => {
+                  if (!annRoomId || !annContent.trim() || annSending) return;
+                  setAnnSending(true);
+                  setAnnSent(false);
+                  api.post('/api/admin/announcements', { roomId: annRoomId, content: annContent.trim() }, {
+                    headers: { 'admin-key': adminKey },
+                  }).then(() => {
+                    setAnnSent(true);
+                    setAnnContent('');
+                    setTimeout(() => setAnnSent(false), 3000);
+                  }).catch(() => {}).finally(() => setAnnSending(false));
+                }}
                 disabled={!annRoomId || !annContent.trim() || annSending}
                 isLoading={annSending}
                 variant="danger"
