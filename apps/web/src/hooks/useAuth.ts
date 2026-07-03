@@ -30,8 +30,10 @@ export function useAuth() {
       socket.connect();
 
       return data;
-    } catch {
-      setError('Failed to create session');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      console.error('[useAuth] createSession failed:', message);
+      setError(`Failed to create session: ${message}`);
       return null;
     } finally {
       setIsLoading(false);
