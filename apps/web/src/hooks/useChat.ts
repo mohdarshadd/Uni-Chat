@@ -40,15 +40,19 @@ export function useChat() {
 
     if (!socket.connected) {
       connectSocket();
+      await new Promise<void>((resolve) => socket.once('connect', () => resolve()));
     }
 
     socket.emit('room:join', { universityId }, (response) => {
       if (response.success) {
-        api
-          .get(`/api/room/${universityId}`)
-          .then(({ data }: { data: Message[] }) => {
-            setMessages(data);
-            setHasMore(data.length >= 50);
+        Promise.all([
+          api.get(`/api/room/${universityId}`),
+          api.get(`/api/universities/${universityId}`),
+        ])
+          .then(([msgRes, uniRes]) => {
+            setMessages(msgRes.data);
+            setHasMore(msgRes.data.length >= 50);
+            setUniversity(uniRes.data);
           })
           .catch(() => {})
           .finally(() => setIsLoading(false));

@@ -29,4 +29,21 @@ router.get('/', async (req: Request, res: Response) => {
   res.json(mapped);
 });
 
+router.get('/:id', async (req: Request, res: Response) => {
+  const uni = await University.findById(req.params.id).lean();
+  if (!uni) {
+    res.status(404).json({ error: 'University not found' });
+    return;
+  }
+
+  res.json({
+    id: uni._id.toString(),
+    name: uni.name,
+    cityId: uni.cityId.toString(),
+    cityName: '',
+    isActive: uni.isActive,
+    memberCount: uni.memberCount,
+  });
+});
+
 export { router as universitiesRoutes };

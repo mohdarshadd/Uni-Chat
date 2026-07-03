@@ -343,6 +343,9 @@ const data = [
             universities: [
               'University of Mumbai',
               'Indian Institute of Technology Bombay',
+              'Sardar Patel Institute of Technology',
+              'Veermata Jijabai Technological Institute',
+              'S. P. Jain Institute of Management and Research',
             ],
           },
           {
@@ -350,6 +353,24 @@ const data = [
             universities: [
               'University of Pune',
               'Indian Institute of Science Education and Research Pune',
+              'College of Engineering Pune',
+              'Symbiosis International University',
+              'Flame University',
+            ],
+          },
+          {
+            name: 'Nagpur',
+            universities: [
+              'Visvesvaraya National Institute of Technology Nagpur',
+              'Rashtrasant Tukadoji Maharaj Nagpur University',
+              'Government College of Engineering Nagpur',
+            ],
+          },
+          {
+            name: 'Nashik',
+            universities: [
+              'Yashwantrao Chavan Maharashtra Open University',
+              'Maharashtra Institute of Technology Nashik',
             ],
           },
         ],
@@ -363,6 +384,25 @@ const data = [
               'Indian Institute of Science',
               'R V College of Engineering',
               'Bangalore University',
+              'PES University',
+              'BMS College of Engineering',
+              'International Institute of Information Technology Bangalore',
+              'National Institute of Design Bangalore',
+            ],
+          },
+          {
+            name: 'Mysuru',
+            universities: [
+              'University of Mysore',
+              'National Institute of Engineering Mysore',
+              'Sri Jayachamarajendra College of Engineering',
+            ],
+          },
+          {
+            name: 'Manipal',
+            universities: [
+              'Manipal Academy of Higher Education',
+              'Manipal Institute of Technology',
             ],
           },
         ],
@@ -376,6 +416,10 @@ const data = [
               'University of Delhi',
               'Indian Institute of Technology Delhi',
               'Jawaharlal Nehru University',
+              'Netaji Subhas University of Technology',
+              'Delhi Technological University',
+              'Indraprastha Institute of Information Technology Delhi',
+              'Ambedkar University Delhi',
             ],
           },
         ],
@@ -388,6 +432,323 @@ const data = [
             universities: [
               'Anna University',
               'Indian Institute of Technology Madras',
+              'SRM Institute of Science and Technology',
+              'Vellore Institute of Technology Chennai',
+              'Madras Christian College',
+              'Loyola College Chennai',
+            ],
+          },
+          {
+            name: 'Coimbatore',
+            universities: [
+              'Coimbatore Institute of Technology',
+              'PSG College of Technology',
+              'Avinashilingam University',
+              'Bharathiar University',
+            ],
+          },
+          {
+            name: 'Madurai',
+            universities: [
+              'Madurai Kamaraj University',
+              'Thiagarajar College of Engineering',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Telangana',
+        cities: [
+          {
+            name: 'Hyderabad',
+            universities: [
+              'University of Hyderabad',
+              'Indian Institute of Technology Hyderabad',
+              'Osmania University',
+              'International Institute of Information Technology Hyderabad',
+              'Jawaharlal Nehru Technological University Hyderabad',
+              'NALSAR University of Law',
+            ],
+          },
+          {
+            name: 'Warangal',
+            universities: [
+              'National Institute of Technology Warangal',
+              'Kakatiya University',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'West Bengal',
+        cities: [
+          {
+            name: 'Kolkata',
+            universities: [
+              'Jadavpur University',
+              'University of Calcutta',
+              'Indian Institute of Management Calcutta',
+              'Indian Statistical Institute Kolkata',
+              'West Bengal University of Technology',
+              'Presidency University Kolkata',
+              'St. Xavier\'s College Kolkata',
+            ],
+          },
+          {
+            name: 'Kharagpur',
+            universities: [
+              'Indian Institute of Technology Kharagpur',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Uttar Pradesh',
+        cities: [
+          {
+            name: 'Kanpur',
+            universities: [
+              'Indian Institute of Technology Kanpur',
+              'Harcourt Butler Technical University Kanpur',
+              'Chhatrapati Shahu Ji Maharaj University',
+            ],
+          },
+          {
+            name: 'Lucknow',
+            universities: [
+              'University of Lucknow',
+              'Indian Institute of Management Lucknow',
+              'Babasaheb Bhimrao Ambedkar University',
+              'King George\'s Medical University',
+              'Dr. Ram Manohar Lohia Institute of Medical Sciences',
+              'Sanjay Gandhi Postgraduate Institute of Medical Sciences',
+              'Era University',
+              'Integral University',
+              'Amity University Lucknow',
+              'Shri Ramswaroop Memorial University',
+              'Lucknow University Faculty of Law',
+              'National Institute of Pharmaceutical Education and Research Lucknow',
+              'Indian Institute of Technology Kanpur (Lucknow Campus)',
+              'Central University of Karnataka (Lucknow Campus)',
+              'Rajarshi Tandon Girls Degree College',
+              'National PG College',
+              'Shia Degree College',
+              'Isabella Thoburn Degree College',
+              'Mahila Mahavidyalaya',
+              'Christ Church College',
+              'Sri Jai Narain PG College',
+              'Guru Nanak Girls Degree College',
+              'D.A.V. PG College',
+              'Awadh Girls Degree College',
+              'Kanya Kubja PG College',
+              'Shri Jai Narain Misra PG College',
+              'Lucknow Christian Degree College',
+              'Nari Shiksha Niketan Degree College',
+              'Gurukul Degree College',
+              'Loyola Degree College',
+              'Bhagwati Degree College',
+              'Maharana Pratap Degree College',
+              'Dayanand Diwakar Degree College',
+              'Sanjay Gandhi Degree College',
+              'Arya Kanya Degree College',
+              'Pt. Deen Dayal Upadhyaya Degree College',
+              'Kanya Gurukul Degree College',
+              'Swami Vivekanand Degree College',
+              'Sardar Patel Degree College',
+              'Jubilee Degree College',
+              'Ram Dulare Degree College',
+              'Rama Degree College',
+              'Sita Ram Degree College',
+              'Rajkiya Degree College',
+              'Sahajanand Degree College',
+              'Shri Guru Ram Rai Degree College',
+              'Adarsh Degree College',
+              'B.R. Ambedkar Degree College',
+              'Chaudhary Charan Singh Degree College',
+              'Devta Shukla Degree College',
+              'Dr. Ambedkar Degree College',
+              'Guru Ram Rai Degree College',
+              'Jai Narain Degree College',
+              'K.D. Degree College',
+            ],
+          },
+          {
+            name: 'Varanasi',
+            universities: [
+              'Banaras Hindu University',
+              'Indian Institute of Technology Varanasi',
+              'Sampurnanand Sanskrit University',
+            ],
+          },
+          {
+            name: 'Allahabad',
+            universities: [
+              'University of Allahabad',
+              'Motilal Nehru National Institute of Technology Allahabad',
+              'Indian Institute of Information Technology Allahabad',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Rajasthan',
+        cities: [
+          {
+            name: 'Jaipur',
+            universities: [
+              'Malaviya National Institute of Technology Jaipur',
+              'University of Rajasthan',
+              'Birla Institute of Technology and Science Pilani',
+              'Manipal University Jaipur',
+              'JECRC University',
+            ],
+          },
+          {
+            name: 'Jodhpur',
+            universities: [
+              'Indian Institute of Technology Jodhpur',
+              'Jai Narain Vyas University',
+              'National Law University Jodhpur',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Gujarat',
+        cities: [
+          {
+            name: 'Ahmedabad',
+            universities: [
+              'Indian Institute of Management Ahmedabad',
+              'Nirma University',
+              'Gujarat University',
+              'Gujarat Technological University',
+              'Dhirubhai Ambani Institute of Information and Communication Technology',
+            ],
+          },
+          {
+            name: 'Vadodara',
+            universities: [
+              'Maharaja Sayajirao University of Baroda',
+              'Parul University',
+              'Sumandeep Vidyapeeth',
+            ],
+          },
+          {
+            name: 'Surat',
+            universities: [
+              'Sardar Vallabhbhai National Institute of Technology Surat',
+              'Veer Narmad South Gujarat University',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Andhra Pradesh',
+        cities: [
+          {
+            name: 'Visakhapatnam',
+            universities: [
+              'Andhra University',
+              'GITAM University',
+              'Indian Institute of Management Visakhapatnam',
+            ],
+          },
+          {
+            name: 'Tirupati',
+            universities: [
+              'Sri Venkateswara University',
+              'Indian Institute of Technology Tirupati',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Kerala',
+        cities: [
+          {
+            name: 'Kochi',
+            universities: [
+              'Cochin University of Science and Technology',
+              'National University of Advanced Legal Studies',
+              'Sree Sankaracharya University of Sanskrit',
+            ],
+          },
+          {
+            name: 'Thiruvananthapuram',
+            universities: [
+              'University of Kerala',
+              'Indian Institute of Space Science and Technology',
+              'College of Engineering Trivandrum',
+            ],
+          },
+          {
+            name: 'Kozhikode',
+            universities: [
+              'University of Calicut',
+              'National Institute of Technology Kozhikode',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Punjab',
+        cities: [
+          {
+            name: 'Chandigarh',
+            universities: [
+              'Panjab University',
+              'Punjab Engineering College',
+              'University Institute of Engineering and Technology',
+            ],
+          },
+          {
+            name: 'Amritsar',
+            universities: [
+              'Guru Nanak Dev University',
+              'Indian Institute of Technology Ropar',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Madhya Pradesh',
+        cities: [
+          {
+            name: 'Indore',
+            universities: [
+              'Indian Institute of Technology Indore',
+              'Devi Ahilya Vishwavidyalaya',
+              'Sri Aurobindo Institute of Technology',
+            ],
+          },
+          {
+            name: 'Bhopal',
+            universities: [
+              'Maulana Azad National Institute of Technology Bhopal',
+              'Barkatullah University',
+              'Indian Institute of Science Education and Research Bhopal',
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Odisha',
+        cities: [
+          {
+            name: 'Bhubaneswar',
+            universities: [
+              'Indian Institute of Technology Bhubaneswar',
+              'KIIT University',
+              'Utkal University',
+              'National Institute of Technology Rourkela',
+            ],
+          },
+          {
+            name: 'Cuttack',
+            universities: [
+              'Utkal University',
+              'Sri Sri University',
             ],
           },
         ],
