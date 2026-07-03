@@ -42,6 +42,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
   res.json({
     token: result.token,
+    sessionId: result.sessionId,
     displayName: result.displayName,
     avatar: result.avatar,
   });

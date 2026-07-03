@@ -72,6 +72,7 @@ export async function createAnonymousSession(): Promise<{
 
 export async function refreshSession(refreshToken: string): Promise<{
   token: string;
+  sessionId: string;
   displayName: string;
   avatar: string;
 } | null> {
@@ -86,6 +87,7 @@ export async function refreshSession(refreshToken: string): Promise<{
 
     return {
       token,
+      sessionId: user.sessionId,
       displayName: user.displayName,
       avatar: user.avatar,
     };
