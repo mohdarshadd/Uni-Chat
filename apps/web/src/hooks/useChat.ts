@@ -40,7 +40,18 @@ export function useChat() {
 
     if (!socket.connected) {
       connectSocket();
-      await new Promise<void>((resolve) => socket.once('connect', () => resolve()));
+      await Promise.race([
+        new Promise<void>((resolve, reject) => {
+          socket.once('connect', () => resolve());
+          socket.once('connect_error', (err) => reject(err));
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Socket connection timeout')), 5000)),
+      ]).catch(() => {});
+    }
+
+    if (!socket.connected) {
+      setIsLoading(false);
+      return;
     }
 
     socket.emit('room:join', { universityId }, (response) => {
@@ -60,7 +71,9 @@ export function useChat() {
         setIsLoading(false);
       }
     });
-  }, [universityId, setMessages]);
+
+    setTimeout(() => setIsLoading(false), 8000);
+  }, [universityId, setMessages, setUniversity]);
 
   useEffect(() => {
     const socket = getSocket();
