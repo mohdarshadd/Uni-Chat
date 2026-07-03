@@ -13,7 +13,7 @@ export let io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
 export function initializeSocket(httpServer: HttpServer): void {
   io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer, {
     cors: {
-      origin: env.CLIENT_URL,
+      origin: env.NODE_ENV === 'production' ? env.CLIENT_URL : true,
       credentials: true,
     },
     transports: ['websocket', 'polling'],

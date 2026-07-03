@@ -26,7 +26,7 @@ export const app: Express = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: env.CLIENT_URL,
+  origin: env.NODE_ENV === 'production' ? env.CLIENT_URL : true,
   credentials: true,
 }));
 app.use(express.json({ limit: '10kb' }));
