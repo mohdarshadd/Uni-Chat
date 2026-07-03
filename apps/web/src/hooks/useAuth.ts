@@ -91,5 +91,5 @@ export function useAuth() {
     error,
     isAuthenticated: !!sessionId,
     rename,
-  };
+  } as const;
 }

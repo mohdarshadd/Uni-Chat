@@ -14,7 +14,7 @@ import { getSocket } from '../lib/socket';
 export function Chat() {
   useExpiryTimer();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, error: authError } = useAuth();
   const {
     isLoading: chatLoading,
     hasMore,
@@ -41,10 +41,26 @@ export function Chat() {
     navigate('/');
   };
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[var(--color-bg)]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-[var(--color-bg)] gap-4 px-4">
+        <p className="text-[var(--color-text-secondary)] text-center">
+          {authError || 'Could not connect to the server'}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600"
+        >
+          Retry
+        </button>
       </div>
     );
   }

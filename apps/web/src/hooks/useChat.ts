@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getSocket, connectSocket } from '../lib/socket';
+import { getSocket } from '../lib/socket';
 import { api } from '../lib/api';
 import { useChatStore } from '../store/useChatStore';
 import type { Message, MessageContentType, Poll } from '@campus-chat/shared';
@@ -12,6 +12,7 @@ export function useChat() {
   const [hasMore, setHasMore] = useState(true);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
+  const joinAttemptedRef = useRef(false);
 
   const {
     messages,
@@ -32,20 +33,32 @@ export function useChat() {
     setAnnouncements,
   } = useChatStore();
 
-  const joinRoom = useCallback(async () => {
+  const doJoin = useCallback(async () => {
     if (!universityId) return;
+    if (joinAttemptedRef.current) return;
+    joinAttemptedRef.current = true;
 
     setIsLoading(true);
     const socket = getSocket();
 
+    // Wait up to 12s for the socket to be connected (useAuth handles connection with proper auth)
     if (!socket.connected) {
-      connectSocket();
       await Promise.race([
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve) => {
           socket.once('connect', () => resolve());
-          socket.once('connect_error', (err) => reject(err));
         }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Socket connection timeout')), 5000)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000)),
+      ]).catch(() => {});
+    }
+
+    if (!socket.connected) {
+      // Fallback: connect ourselves with whatever auth is set
+      socket.connect();
+      await Promise.race([
+        new Promise<void>((resolve) => {
+          socket.once('connect', () => resolve());
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
       ]).catch(() => {});
     }
 
@@ -78,7 +91,13 @@ export function useChat() {
   useEffect(() => {
     const socket = getSocket();
 
-    socket.on('connect', () => setConnected(true));
+    socket.on('connect', () => {
+      setConnected(true);
+      // Retry room join on reconnect if not already done
+      if (!joinAttemptedRef.current && universityId) {
+        doJoin();
+      }
+    });
     socket.on('disconnect', () => setConnected(false));
 
     socket.on('room:joined', (data) => {
@@ -132,9 +151,10 @@ export function useChat() {
       }
     });
 
-    joinRoom();
+    doJoin();
 
     return () => {
+      joinAttemptedRef.current = false;
       if (universityId) {
         socket.emit('room:leave', { universityId });
       }
@@ -151,7 +171,7 @@ export function useChat() {
       socket.off('announcement:new');
       socket.off('typing:update');
     };
-  }, [universityId, joinRoom, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
+  }, [universityId, doJoin, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
 
   const sendMessage = useCallback(
     (content: string, replyToId?: string | null, gifData?: { url: string; title?: string }) => {
@@ -254,7 +274,7 @@ export function useChat() {
     votePoll,
     dismissAnnouncement,
     loadMore,
-    leaveRoom: joinRoom,
+    leaveRoom: doJoin,
     polls,
     announcements,
   };
