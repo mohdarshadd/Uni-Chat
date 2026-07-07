@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: campus-chat
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    startCommand: node apps/server/dist/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20.18.0"
+      - key: PNPM_VERSION
+        value: "9.15.0"
+      - key: ENABLE_PNPM
+        value: "1"
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_KEY
+        value: admin-secret-change-me
+      - key: VITE_GIPHY_API_KEY
+        sync: false
+      - key: VITE_API_URL
+        value: ""
+      - key: VITE_SOCKET_URL
+        value: ""

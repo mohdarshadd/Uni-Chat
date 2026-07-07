@@ -1,3 +1,5 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import express, { type Express } from 'express';
 import cors from 'cors';
@@ -22,13 +24,11 @@ import { reportRoutes } from './routes/report.routes.js';
 import { adminRoutes } from './routes/admin.routes.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const app: Express = express();
 
-app.use(helmet());
-app.use(cors({
-  origin: env.NODE_ENV === 'production' ? env.CLIENT_URL : true,
-  credentials: true,
-}));
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 
@@ -46,5 +46,19 @@ app.use('/api/room', messagesRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/reports', apiLimiter, reportRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Serve frontend in production
+if (env.NODE_ENV === 'production') {
+  const webDist = path.resolve(__dirname, '../../web/dist');
+  app.use(express.static(webDist));
+
+  app.get('*', (req, res) => {
+    if (req.path.startsWith('/api')) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'API route not found' } });
+    } else {
+      res.sendFile(path.join(webDist, 'index.html'));
+    }
+  });
+}
 
 app.use(errorHandler);
