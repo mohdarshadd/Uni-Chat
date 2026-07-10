@@ -106,7 +106,7 @@ export const useChatStore = create<ChatState>((set) => ({
   setTypingUsers: (typingUsers) => set({ typingUsers }),
 
   // Theme
-  theme: (localStorage.getItem('theme') as 'light' | 'dark') ?? 'dark',
+  theme: (localStorage.getItem('theme') as 'light' | 'dark') ?? 'light',
   setTheme: (theme) => {
     localStorage.setItem('theme', theme);
     set({ theme });
