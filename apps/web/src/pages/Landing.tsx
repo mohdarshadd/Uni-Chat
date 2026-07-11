@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Search, ArrowRight, Globe } from 'lucide-react';
+import { MessageCircle, Search, Globe } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { api } from '../lib/api';
 import { Button } from '../components/ui/Button';
@@ -32,7 +32,7 @@ export function Landing() {
   useAuth();
   const navigate = useNavigate();
 
-  const [step, setStep] = useState<'welcome' | 'country' | 'city' | 'university'>('welcome');
+  const [step, setStep] = useState<'country' | 'city' | 'university'>('country');
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [universities, setUniversities] = useState<University[]>([]);
@@ -97,38 +97,6 @@ export function Landing() {
   const handleSelectUniversity = (uni: University) => {
     navigate(`/chat/${uni.id}`);
   };
-
-  if (step === 'welcome') {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--color-bg)] px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-500/10">
-            <MessageCircle className="h-10 w-10 text-brand-500" />
-          </div>
-          <h1 className="mb-3 text-4xl font-bold text-[var(--color-text)] sm:text-5xl">
-            Campus Chat
-          </h1>
-          <p className="mb-8 text-lg text-[var(--color-text-secondary)]">
-            Anonymous real-time chat for university students
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setStep('country')}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-colors hover:bg-brand-600"
-          >
-            Get Started
-            <ArrowRight size={18} />
-          </motion.button>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-bg)]">
