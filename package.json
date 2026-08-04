@@ -2,11 +2,11 @@
   "name": "campus-chat",
   "private": true,
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "lint": "turbo lint",
+    "dev": "pnpm --parallel --filter @campus-chat/server --filter @campus-chat/web dev",
+    "build": "pnpm --filter @campus-chat/shared build && pnpm --filter @campus-chat/server build && pnpm --filter @campus-chat/web build",
+    "lint": "pnpm --parallel --filter @campus-chat/server --filter @campus-chat/web lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\"",
-    "clean": "turbo clean && rm -rf node_modules"
+    "clean": "rm -rf node_modules"
   },
   "devDependencies": {
     "prettier": "^3.4.0",
