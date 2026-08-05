@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import mongoose from 'mongoose';
 import { Country } from './models/Country.js';
 import { State } from './models/State.js';
