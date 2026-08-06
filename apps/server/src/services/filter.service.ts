@@ -8,16 +8,6 @@ const BAD_WORDS_PATTERN = new RegExp(
   'gi',
 );
 
-export function sanitize(input: string): string {
-  return input
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .trim();
-}
-
 export function filterProfanity(input: string): string {
   return input.replace(BAD_WORDS_PATTERN, (match) => {
     return match[0] + '*'.repeat(match.length - 1);
@@ -25,6 +15,5 @@ export function filterProfanity(input: string): string {
 }
 
 export function cleanMessage(input: string): string {
-  const sanitized = sanitize(input);
-  return filterProfanity(sanitized);
+  return filterProfanity(input.trim());
 }
