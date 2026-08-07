@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Send, Smile, Reply as ReplyIcon, Image, BarChart3, X } from 'lucide-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
@@ -8,6 +8,7 @@ import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
 import { GifPicker } from './GifPicker';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useChatStore } from '../../store/useChatStore';
 
 interface GifResult {
   id: string;
@@ -32,6 +33,20 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
   const [showEmoji, setShowEmoji] = useState(false);
   const [showGif, setShowGif] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const theme = useChatStore((s) => s.theme);
+
+  const perLine = typeof window !== 'undefined' && window.innerWidth < 420 ? 7 : 9;
+
+  useEffect(() => {
+    if (!showEmoji && !showGif) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest('[data-picker]')) return;
+      setShowEmoji(false);
+      setShowGif(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showEmoji, showGif]);
 
   const handleSend = useCallback(() => {
     const trimmed = content.trim();
@@ -63,7 +78,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
   };
 
   return (
-    <div className="border-t border-[var(--color-border)] bg-[var(--color-bg)] px-4 pb-4 pt-3">
+    <div className="relative border-t border-[var(--color-border)] bg-[var(--color-bg)] px-4 pb-4 pt-3">
       <AnimatePresence>
         {replyTo ? (
           <motion.div
@@ -152,15 +167,18 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-full right-4 mb-2"
+            className="absolute bottom-full right-0 z-50 mb-2"
+            data-picker
           >
             <Picker
               data={data}
               onEmojiSelect={handleEmojiSelect}
-              theme="dark"
+              theme={theme}
               previewPosition="none"
               skinTonePosition="none"
               set="native"
+              perLine={perLine}
+              maxFrequentRows={3}
             />
           </motion.div>
         ) : null}

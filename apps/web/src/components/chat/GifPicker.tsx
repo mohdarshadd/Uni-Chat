@@ -85,7 +85,8 @@ export function GifPicker({ isOpen, onClose, onSelect }: GifPickerProps) {
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-          className="absolute bottom-full right-0 mb-2 w-80 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl"
+          className="absolute bottom-full right-0 z-50 mb-2 w-80 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl"
+          data-picker
         >
           <div className="border-b border-[var(--color-border)] p-2">
             <div className="relative">
