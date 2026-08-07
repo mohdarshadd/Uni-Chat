@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
 import { AppError } from './errorHandler.js';
+import { env } from '../config/env.js';
 
-const ADMIN_KEY = process.env.ADMIN_KEY || 'admin-secret-change-me';
+const ADMIN_KEY = env.ADMIN_KEY ?? 'admin-secret-change-me';
 
 export function adminAuth(req: Request, _res: Response, next: NextFunction): void {
   const key = req.headers['admin-key'] as string;

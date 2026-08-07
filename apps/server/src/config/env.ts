@@ -12,6 +12,15 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('15m'),
   REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
   CLIENT_URL: z.string().default('http://localhost:5173'),
+  ADMIN_KEY: z.string().min(8, 'ADMIN_KEY must be at least 8 characters').optional(),
+}).superRefine((data, ctx) => {
+  if (data.NODE_ENV === 'production' && !data.ADMIN_KEY) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['ADMIN_KEY'],
+      message: 'ADMIN_KEY is required in production',
+    });
+  }
 });
 
 const parsed = envSchema.safeParse(process.env);
