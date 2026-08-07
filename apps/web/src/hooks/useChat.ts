@@ -77,6 +77,7 @@ export function useChat() {
             setMessages(msgRes.data);
             setHasMore(msgRes.data.length >= 50);
             setUniversity(uniRes.data);
+            localStorage.setItem('lastRoom', JSON.stringify({ id: uniRes.data.id, name: uniRes.data.name }));
           })
           .catch(() => {})
           .finally(() => setIsLoading(false));
@@ -104,6 +105,7 @@ export function useChat() {
       setUniversity(data.university);
       setUsers(data.users, data.onlineCount);
       setMessages(data.messages);
+      localStorage.setItem('lastRoom', JSON.stringify({ id: data.university.id, name: data.university.name }));
     });
 
     socket.on('poll:new', (poll) => {

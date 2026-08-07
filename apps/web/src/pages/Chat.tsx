@@ -96,6 +96,7 @@ export function Chat() {
   }
 
   if (!university) {
+    localStorage.removeItem('lastRoom');
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-[var(--color-bg)] gap-4">
         <p className="text-[var(--color-text-secondary)]">Room not found</p>

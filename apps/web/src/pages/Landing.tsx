@@ -28,6 +28,11 @@ interface Country {
   code: string;
 }
 
+interface SavedRoom {
+  id: string;
+  name: string;
+}
+
 export function Landing() {
   useAuth();
   const navigate = useNavigate();
@@ -38,6 +43,14 @@ export function Landing() {
   const [universities, setUniversities] = useState<University[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [lastRoom, setLastRoom] = useState<SavedRoom | null>(() => {
+    try {
+      const raw = localStorage.getItem('lastRoom');
+      return raw ? (JSON.parse(raw) as SavedRoom) : null;
+    } catch {
+      return null;
+    }
+  });
   const [countrySearch, setCountrySearch] = useState('');
   const [citySearch, setCitySearch] = useState('');
   const [uniSearch, setUniSearch] = useState('');
@@ -110,6 +123,25 @@ export function Landing() {
       </header>
 
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
+        {lastRoom && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={() => navigate(`/chat/${lastRoom.id}`)}
+            className="glass mb-8 flex w-full items-center gap-3 rounded-xl border border-brand-500/40 bg-brand-500/10 p-4 text-left transition-all hover:border-brand-500/70"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-500/20">
+              <MessageCircle size={20} className="text-brand-500" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs text-[var(--color-text-secondary)]">
+                Continue chatting
+              </p>
+              <p className="font-medium text-[var(--color-text)]">{lastRoom.name}</p>
+            </div>
+            <span className="text-sm font-medium text-brand-500">Join &rarr;</span>
+          </motion.button>
+        )}
         {/* Country selection */}
         {step === 'country' && (
           <>
