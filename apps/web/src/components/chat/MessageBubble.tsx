@@ -137,7 +137,7 @@ export const MessageBubble = memo(function MessageBubble({
               <p className={cn(
                 'px-3.5 py-2 text-sm leading-relaxed',
                 isOwn
-                  ? 'bg-brand-500 text-white'
+                  ? 'bg-brand-500 text-[var(--color-on-accent)]'
                   : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)]',
               )}>
                 {message.content}
@@ -153,7 +153,7 @@ export const MessageBubble = memo(function MessageBubble({
             className={cn(
               'rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
               isOwn
-                ? 'bg-brand-500 text-white rounded-tr-md'
+                ? 'bg-brand-500 text-[var(--color-on-accent)] rounded-tr-md'
                 : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)] rounded-tl-md',
             )}
           >
