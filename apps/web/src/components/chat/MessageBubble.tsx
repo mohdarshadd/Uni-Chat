@@ -33,6 +33,24 @@ function useCountdown(expiresAt: string) {
   return remaining;
 }
 
+function isSingleEmojiMessage(content: string): boolean {
+  const trimmed = content.trim();
+  if (!trimmed) return false;
+
+  let graphemeCount = 0;
+  try {
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    for (const _ of segmenter.segment(trimmed)) {
+      graphemeCount++;
+      if (graphemeCount > 1) return false;
+    }
+  } catch {
+    if (Array.from(trimmed).length > 2) return false;
+  }
+
+  return /\p{Extended_Pictographic}/u.test(trimmed) && !/[A-Za-z0-9]/.test(trimmed);
+}
+
 export const MessageBubble = memo(function MessageBubble({
   message,
   onReply,
@@ -44,6 +62,7 @@ export const MessageBubble = memo(function MessageBubble({
   const sessionId = useChatStore((s) => s.sessionId);
   const isOwn = message.senderId === sessionId;
   const countdown = useCountdown(message.expiresAt);
+  const isSingleEmoji = message.contentType !== 'gif' && isSingleEmojiMessage(message.content);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -111,6 +130,10 @@ export const MessageBubble = memo(function MessageBubble({
                 {message.content}
               </p>
             ) : null}
+          </div>
+        ) : isSingleEmoji ? (
+          <div className="select-text py-0.5 text-5xl leading-none sm:text-6xl">
+            {message.content}
           </div>
         ) : (
           <div
