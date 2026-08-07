@@ -1,7 +1,13 @@
 import { clsx, type ClassValue } from 'clsx';
+import { ANIMAL_EMOJIS } from '@campus-chat/shared';
 
 export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);
+}
+
+export function getAvatarEmoji(avatar: string | null | undefined): string {
+  const emoji = ANIMAL_EMOJIS[(avatar ?? '').trim().toLowerCase()];
+  return emoji ?? getInitials(avatar ?? '');
 }
 
 export function formatRelativeTime(date: string | Date): string {

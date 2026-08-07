@@ -2,7 +2,7 @@ import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Copy, Trash2, Reply, Clock, Flag } from 'lucide-react';
 import type { Message } from '@campus-chat/shared';
-import { cn, getTime } from '../../lib/utils';
+import { cn, getTime, getAvatarEmoji } from '../../lib/utils';
 import { useChatStore } from '../../store/useChatStore';
 import { ReportModal } from './ReportModal';
 
@@ -86,11 +86,11 @@ export const MessageBubble = memo(function MessageBubble({
     >
       <div
         className={cn(
-          'flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold',
+          'flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-base',
           'bg-brand-500/10 text-brand-500 dark:bg-brand-500/20',
         )}
       >
-        {message.avatar.slice(0, 2).toUpperCase()}
+        {getAvatarEmoji(message.avatar)}
       </div>
 
       <div className={cn('flex max-w-[75%] flex-col', isOwn ? 'items-end' : 'items-start')}>

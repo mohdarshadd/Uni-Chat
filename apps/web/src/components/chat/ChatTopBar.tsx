@@ -2,6 +2,7 @@ import { Sun, Moon, Users, LogOut } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 import { RenameModal } from './RenameModal';
 import { useState } from 'react';
+import { getAvatarEmoji } from '../../lib/utils';
 
 interface ChatTopBarProps {
   universityName: string;
@@ -18,7 +19,7 @@ export function ChatTopBar({
   onRename,
   onLeave,
 }: ChatTopBarProps) {
-  const { theme, toggleTheme, displayName } = useChatStore();
+  const { theme, toggleTheme, displayName, avatar } = useChatStore();
   const [showRename, setShowRename] = useState(false);
 
   return (
@@ -51,8 +52,9 @@ export function ChatTopBar({
 
             <button
               onClick={() => setShowRename(true)}
-              className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors"
             >
+              <span className="text-base">{getAvatarEmoji(avatar)}</span>
               {displayName}
             </button>
 
