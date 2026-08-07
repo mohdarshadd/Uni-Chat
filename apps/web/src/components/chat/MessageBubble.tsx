@@ -60,9 +60,13 @@ export const MessageBubble = memo(function MessageBubble({
   const [isHovered, setIsHovered] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const sessionId = useChatStore((s) => s.sessionId);
+  const messages = useChatStore((s) => s.messages);
   const isOwn = message.senderId === sessionId;
   const countdown = useCountdown(message.expiresAt);
   const isSingleEmoji = message.contentType !== 'gif' && isSingleEmojiMessage(message.content);
+  const repliedMessage = message.replyTo
+    ? messages.find((m) => m.id === message.replyTo) ?? null
+    : null;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -104,8 +108,17 @@ export const MessageBubble = memo(function MessageBubble({
         </div>
 
         {message.replyTo ? (
-          <div className="mb-1 rounded-md border-l-2 border-brand-500 bg-[var(--color-bg-secondary)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)]">
-            Replying to a message
+          <div className="mb-1 flex max-w-[280px] items-center gap-1.5 rounded-md border-l-2 border-brand-500 bg-[var(--color-bg-secondary)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)]">
+            {repliedMessage ? (
+              <>
+                <strong className="truncate text-[var(--color-text)]">{repliedMessage.senderName}</strong>
+                <span className="truncate">
+                  {repliedMessage.contentType === 'gif' ? 'sent a GIF' : repliedMessage.content}
+                </span>
+              </>
+            ) : (
+              <span>Replying to a message</span>
+            )}
           </div>
         ) : null}
 
