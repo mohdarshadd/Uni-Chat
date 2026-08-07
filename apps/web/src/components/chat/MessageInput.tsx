@@ -38,6 +38,12 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
   const perLine = typeof window !== 'undefined' && window.innerWidth < 420 ? 7 : 9;
 
   useEffect(() => {
+    if (replyTo) {
+      inputRef.current?.focus();
+    }
+  }, [replyTo]);
+
+  useEffect(() => {
     if (!showEmoji && !showGif) return;
     const handleClickOutside = (e: MouseEvent) => {
       if ((e.target as HTMLElement).closest('[data-picker]')) return;
