@@ -28,7 +28,7 @@ export function ChatTopBar({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500/10">
-              <span className="text-sm font-bold text-brand-500">
+              <span className="text-sm font-bold text-brand-300">
                 {universityName.slice(0, 2).toUpperCase()}
               </span>
             </div>
@@ -44,7 +44,7 @@ export function ChatTopBar({
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 rounded-lg bg-[var(--color-bg-secondary)] px-2.5 py-1.5">
-              <Users size={14} className="text-brand-500" />
+              <Users size={14} className="text-brand-300" />
               <span className="text-xs font-medium text-[var(--color-text)]">
                 {onlineCount}
               </span>
