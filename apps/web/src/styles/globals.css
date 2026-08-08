@@ -46,20 +46,20 @@
 
   .dark {
     --color-bg: #111111;
-    --color-bg-secondary: #30001a;
+    --color-bg-secondary: #1a1a23;
     --color-text: #e1e1e6;
     --color-text-secondary: #8c8c9e;
     --color-border: #2a2a3a;
-    --color-accent: #b9266a;
-    --color-accent-hover: #a01f5c;
+    --color-accent: #30001a;
+    --color-accent-hover: #4a0a2e;
     --color-on-accent: #ffffff;
     --color-danger: #ef4444;
     --color-success: #22c55e;
     --color-warning: #f59e0b;
 
-    --brand-500: 185 38 106;
-    --brand-600: 160 31 92;
-    --brand-700: 138 26 80;
+    --brand-500: 185 245 219;
+    --brand-600: 141 224 185;
+    --brand-700: 127 214 173;
   }
 }
 
