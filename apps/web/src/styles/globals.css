@@ -50,16 +50,16 @@
     --color-text: #e1e1e6;
     --color-text-secondary: #8c8c9e;
     --color-border: #2a2a3a;
-    --color-accent: #f7fff7;
-    --color-accent-hover: #e8f5e8;
-    --color-on-accent: #000000;
+    --color-accent: #b9266a;
+    --color-accent-hover: #a01f5c;
+    --color-on-accent: #ffffff;
     --color-danger: #ef4444;
     --color-success: #22c55e;
     --color-warning: #f59e0b;
 
-    --brand-500: 247 255 247;
-    --brand-600: 232 245 232;
-    --brand-700: 213 235 213;
+    --brand-500: 185 38 106;
+    --brand-600: 160 31 92;
+    --brand-700: 138 26 80;
   }
 }
 
