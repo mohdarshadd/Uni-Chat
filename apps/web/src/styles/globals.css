@@ -25,28 +25,28 @@
     --color-text: #212529;
     --color-text-secondary: #6b7280;
     --color-border: #dbe9dd;
-    --color-accent: #6366f1;
-    --color-accent-hover: #5457e8;
+    --color-accent: #5448a3;
+    --color-accent-hover: #463d8e;
     --color-on-accent: #ffffff;
     --color-danger: #ef4444;
     --color-success: #22c55e;
     --color-warning: #f59e0b;
 
-    --brand-50: 240 240 255;
-    --brand-100: 224 224 255;
-    --brand-200: 192 192 255;
-    --brand-300: 160 160 255;
-    --brand-400: 128 128 255;
-    --brand-500: 99 102 241;
-    --brand-600: 84 87 232;
-    --brand-700: 69 72 213;
-    --brand-800: 56 59 184;
-    --brand-900: 46 49 153;
+    --brand-50: 240 239 250;
+    --brand-100: 226 224 245;
+    --brand-200: 196 192 235;
+    --brand-300: 166 160 224;
+    --brand-400: 125 116 193;
+    --brand-500: 84 72 163;
+    --brand-600: 71 61 143;
+    --brand-700: 59 51 122;
+    --brand-800: 47 41 98;
+    --brand-900: 37 32 76;
   }
 
   .dark {
-    --color-bg: #000000;
-    --color-bg-secondary: #480F2D;
+    --color-bg: #111111;
+    --color-bg-secondary: #30001a;
     --color-text: #e1e1e6;
     --color-text-secondary: #8c8c9e;
     --color-border: #2a2a3a;
