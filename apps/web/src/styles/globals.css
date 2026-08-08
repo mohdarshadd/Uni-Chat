@@ -45,8 +45,8 @@
   }
 
   .dark {
-    --color-bg: #111111;
-    --color-bg-secondary: #1a1a23;
+    --color-bg: #000000;
+    --color-bg-secondary: #480F2D;
     --color-text: #e1e1e6;
     --color-text-secondary: #8c8c9e;
     --color-border: #2a2a3a;
