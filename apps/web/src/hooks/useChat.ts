@@ -13,6 +13,7 @@ export function useChat() {
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
   const joinAttemptedRef = useRef(false);
+  const joinedRoomRef = useRef<string | null>(null);
 
   const {
     messages,
@@ -33,9 +34,9 @@ export function useChat() {
     setAnnouncements,
   } = useChatStore();
 
-  const doJoin = useCallback(async () => {
+  const doJoin = useCallback(async (force = false) => {
     if (!universityId) return;
-    if (joinAttemptedRef.current) return;
+    if (joinAttemptedRef.current && !force) return;
     joinAttemptedRef.current = true;
 
     setIsLoading(true);
@@ -69,6 +70,7 @@ export function useChat() {
 
     socket.emit('room:join', { universityId }, (response) => {
       if (response.success) {
+        joinedRoomRef.current = universityId;
         Promise.all([
           api.get(`/api/room/${universityId}`),
           api.get(`/api/universities/${universityId}`),
@@ -94,8 +96,9 @@ export function useChat() {
 
     socket.on('connect', () => {
       setConnected(true);
-      // Retry room join on reconnect if not already done
-      if (!joinAttemptedRef.current && universityId) {
+      if (universityId && joinedRoomRef.current === universityId) {
+        doJoin(true);
+      } else if (universityId && !joinAttemptedRef.current) {
         doJoin();
       }
     });
@@ -155,8 +158,18 @@ export function useChat() {
 
     doJoin();
 
+    const handleVisibility = () => {
+      if (document.visibilityState !== 'visible') return;
+      const socket = getSocket();
+      if (!socket.connected) {
+        socket.connect();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       joinAttemptedRef.current = false;
+      document.removeEventListener('visibilitychange', handleVisibility);
       if (universityId) {
         socket.emit('room:leave', { universityId });
       }
@@ -175,11 +188,34 @@ export function useChat() {
     };
   }, [universityId, doJoin, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
 
-  const sendMessage = useCallback(
-    (content: string, replyToId?: string | null, gifData?: { url: string; title?: string }) => {
-      const socket = getSocket();
-      if (!socket.connected) return;
+  const ensureSocketReady = useCallback(async (): Promise<boolean> => {
+    const socket = getSocket();
+    if (!socket.connected) socket.connect();
 
+    if (!socket.connected) {
+      try {
+        await Promise.race([
+          new Promise<void>((resolve) => socket.once('connect', () => resolve())),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000)),
+        ]);
+      } catch {
+        return false;
+      }
+    }
+
+    if (universityId && joinedRoomRef.current !== universityId) {
+      await doJoin();
+    }
+
+    return socket.connected;
+  }, [universityId, doJoin]);
+
+  const sendMessage = useCallback(
+    async (content: string, replyToId?: string | null, gifData?: { url: string; title?: string }) => {
+      const ready = await ensureSocketReady();
+      if (!ready) return;
+
+      const socket = getSocket();
       const payload: { content: string; contentType?: MessageContentType; mediaUrl?: string; replyTo?: string | null } = { content, replyTo: replyToId };
       if (gifData) {
         payload.contentType = 'gif';
@@ -192,7 +228,7 @@ export function useChat() {
         }
       });
     },
-    [],
+    [ensureSocketReady],
   );
 
   const deleteMessage = useCallback((messageId: string) => {
@@ -223,25 +259,27 @@ export function useChat() {
     [universityId],
   );
 
-  const createPoll = useCallback((question: string, options: string[]) => {
+  const createPoll = useCallback(async (question: string, options: string[]) => {
+    const ready = await ensureSocketReady();
+    if (!ready) return;
     const socket = getSocket();
-    if (!socket.connected) return;
     socket.emit('poll:create', { question, options }, (response) => {
       if (!response.success) {
         console.error('Failed to create poll:', response.error);
       }
     });
-  }, []);
+  }, [ensureSocketReady]);
 
-  const votePoll = useCallback((pollId: string, optionId: string) => {
+  const votePoll = useCallback(async (pollId: string, optionId: string) => {
+    const ready = await ensureSocketReady();
+    if (!ready) return;
     const socket = getSocket();
-    if (!socket.connected) return;
     socket.emit('poll:vote', { pollId, optionId }, (response) => {
       if (!response.success) {
         console.error('Failed to vote:', response.error);
       }
     });
-  }, []);
+  }, [ensureSocketReady]);
 
   const dismissAnnouncement = useCallback((id: string) => {
     const state = useChatStore.getState();
