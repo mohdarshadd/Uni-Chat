@@ -147,7 +147,7 @@ export function Chat() {
 
       <MessageInput
         onSend={sendMessage}
-        onSendGif={(gif, replyToId) => sendMessage(gif.title || '', replyToId, { url: gif.url, title: gif.title })}
+        onSendGif={(gif, replyToId) => sendMessage('', replyToId, { url: gif.url, title: gif.title })}
         onCreatePoll={() => setShowPollModal(true)}
         replyTo={replyTo}
         onClearReply={() => setReplyTo(null)}
