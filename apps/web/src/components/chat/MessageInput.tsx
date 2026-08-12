@@ -140,7 +140,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
               title="Send a GIF"
               aria-label="Send a GIF"
             >
-              <Clapperboard size={18} />
+              <Clapperboard size={20} />
             </button>
             <button
               onClick={() => { setShowGif(false); setShowEmoji(!showEmoji); }}
