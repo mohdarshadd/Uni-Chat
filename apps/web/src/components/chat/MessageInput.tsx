@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Send, Smile, Reply as ReplyIcon, Image, BarChart3, X } from 'lucide-react';
+import { Send, Smile, Reply as ReplyIcon, Clapperboard, BarChart3, X } from 'lucide-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import type { Message } from '@campus-chat/shared';
@@ -139,7 +139,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
               title="GIF"
             >
-              <Image size={18} />
+              <Clapperboard size={18} />
             </button>
             <button
               onClick={() => { setShowGif(false); setShowEmoji(!showEmoji); }}
