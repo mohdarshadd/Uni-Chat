@@ -136,7 +136,12 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             </button>
             <button
               onClick={() => { setShowEmoji(false); setShowGif(!showGif); }}
-              className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
+              className={cn(
+                'rounded-lg p-1.5 transition-colors',
+                showGif
+                  ? 'bg-[var(--color-bg)] text-brand-500'
+                  : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500',
+              )}
               title="Send a GIF"
               aria-label="Send a GIF"
             >
