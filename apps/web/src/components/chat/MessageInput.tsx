@@ -188,7 +188,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
               theme={theme}
               previewPosition="none"
               skinTonePosition="none"
-              set="native"
+              set="apple"
               perLine={perLine}
               maxFrequentRows={3}
             />
