@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare, Users, Building2, Flag, Activity,
-  TrendingUp, BarChart3, Settings, Megaphone, CheckCircle, Lock,
+  TrendingUp, BarChart3, Settings, Megaphone, CheckCircle, Lock, Search,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Button } from '../components/ui/Button';
@@ -45,6 +45,7 @@ export function Admin() {
   const [rooms, setRooms] = useState<Room[] | null>(null);
   const [annRoomId, setAnnRoomId] = useState('');
   const [annContent, setAnnContent] = useState('');
+  const [annSearch, setAnnSearch] = useState('');
   const [annSending, setAnnSending] = useState(false);
   const [annSent, setAnnSent] = useState(false);
   const [adminKey, setAdminKey] = useState<string | null>(() => sessionStorage.getItem('admin-key'));
@@ -171,17 +172,32 @@ export function Admin() {
           <div className="space-y-4">
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--color-text-secondary)]">Room (University)</label>
+              <div className="relative mb-2">
+                <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]" />
+                <input
+                  type="text"
+                  value={annSearch}
+                  onChange={(e) => {
+                    setAnnSearch(e.target.value);
+                    if (!rooms?.some((r) => r.id === annRoomId)) setAnnRoomId('');
+                  }}
+                  placeholder="Search university/room..."
+                  className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] py-2.5 pl-9 pr-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-secondary)] focus:border-brand-500 focus:outline-none"
+                />
+              </div>
               <select
                 value={annRoomId}
                 onChange={(e) => setAnnRoomId(e.target.value)}
                 className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2.5 text-sm text-[var(--color-text)]"
               >
                 <option value="">Select a room...</option>
-                {rooms?.map((room) => (
-                  <option key={room.id} value={room.id}>
-                    {room.name} ({room.memberCount} online)
-                  </option>
-                ))}
+                {rooms
+                  ?.filter((room) => room.name.toLowerCase().includes(annSearch.trim().toLowerCase()))
+                  .map((room) => (
+                    <option key={room.id} value={room.id}>
+                      {room.name} ({room.memberCount} online)
+                    </option>
+                  ))}
               </select>
             </div>
 
