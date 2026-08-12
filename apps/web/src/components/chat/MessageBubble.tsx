@@ -133,16 +133,6 @@ export const MessageBubble = memo(function MessageBubble({
               className="max-w-[280px] h-auto object-cover"
               loading="lazy"
             />
-            {message.content ? (
-              <p className={cn(
-                'px-3.5 py-2 text-sm leading-relaxed',
-                isOwn
-                  ? 'bg-brand-500 text-[var(--color-on-accent)]'
-                  : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)]',
-              )}>
-                {message.content}
-              </p>
-            ) : null}
           </div>
         ) : isSingleEmoji ? (
           <div className="select-text py-0.5 text-5xl leading-none sm:text-6xl">

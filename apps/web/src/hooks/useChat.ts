@@ -102,7 +102,11 @@ export function useChat() {
         doJoin();
       }
     });
-    socket.on('disconnect', () => setConnected(false));
+    socket.on('disconnect', () => {
+      setConnected(false);
+      joinedRoomRef.current = null;
+      joinAttemptedRef.current = false;
+    });
 
     socket.on('room:joined', (data) => {
       setUniversity(data.university);
@@ -204,7 +208,7 @@ export function useChat() {
     }
 
     if (universityId && joinedRoomRef.current !== universityId) {
-      await doJoin();
+      await doJoin(true);
     }
 
     return socket.connected;
