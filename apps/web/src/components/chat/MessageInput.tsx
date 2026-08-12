@@ -137,8 +137,8 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             <button
               onClick={() => { setShowEmoji(false); setShowGif(!showGif); }}
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
-              title="GIF"
-              aria-label="GIF"
+              title="Send a GIF"
+              aria-label="Send a GIF"
             >
               <Clapperboard size={18} />
             </button>
