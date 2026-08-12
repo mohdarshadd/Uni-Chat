@@ -3,20 +3,16 @@ import { AnimatePresence } from 'framer-motion';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 import { PollBubble } from './PollBubble';
-import { AnnouncementBubble } from './AnnouncementBubble';
 import type { Message, Poll } from '@campus-chat/shared';
-import type { AnnouncementItem } from '../../store/useChatStore';
 import { useChatStore } from '../../store/useChatStore';
 
 interface MessageListProps {
   messages: Message[];
   polls: Poll[];
-  announcements: AnnouncementItem[];
   onReply: (message: Message) => void;
   onDelete: (messageId: string) => void;
   onLike: (messageId: string) => void;
   onVote: (pollId: string, optionId: string) => void;
-  onDismissAnnouncement?: (id: string) => void;
   onLoadMore: () => void;
   hasMore: boolean;
 }
@@ -24,12 +20,10 @@ interface MessageListProps {
 export function MessageList({
   messages,
   polls,
-  announcements,
   onReply,
   onDelete,
   onLike,
   onVote,
-  onDismissAnnouncement,
   onLoadMore,
   hasMore,
 }: MessageListProps) {
@@ -64,15 +58,6 @@ export function MessageList({
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
         </div>
       ) : null}
-
-      {/* Announcements */}
-      {announcements.map((ann) => (
-        <AnnouncementBubble
-          key={ann.id}
-          announcement={ann}
-          onDismiss={onDismissAnnouncement}
-        />
-      ))}
 
       {/* Messages */}
       <AnimatePresence initial={false}>

@@ -7,6 +7,7 @@ import { ChatTopBar } from '../components/chat/ChatTopBar';
 import { MessageList } from '../components/chat/MessageList';
 import { MessageInput } from '../components/chat/MessageInput';
 import { CreatePollModal } from '../components/chat/CreatePollModal';
+import { AnnouncementBubble } from '../components/chat/AnnouncementBubble';
 import { useChatStore } from '../store/useChatStore';
 import { Skeleton } from '../components/ui/Skeleton';
 import { getSocket } from '../lib/socket';
@@ -111,7 +112,7 @@ export function Chat() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-[var(--color-bg)]">
+    <div className="relative flex h-screen flex-col bg-[var(--color-bg)]">
       <ChatTopBar
         universityName={university.name}
         cityName={university.cityName}
@@ -120,15 +121,26 @@ export function Chat() {
         onLeave={handleLeave}
       />
 
+      {announcements.length > 0 ? (
+        <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex flex-col items-center gap-1">
+          {announcements.map((ann) => (
+            <div key={ann.id} className="pointer-events-auto w-full max-w-xl">
+              <AnnouncementBubble
+                announcement={ann}
+                onDismiss={dismissAnnouncement}
+              />
+            </div>
+          ))}
+        </div>
+      ) : null}
+
       <MessageList
         messages={messages}
         polls={polls}
-        announcements={announcements}
         onReply={setReplyTo}
         onDelete={deleteMessage}
         onLike={likeMessage}
         onVote={votePoll}
-        onDismissAnnouncement={dismissAnnouncement}
         onLoadMore={loadMore}
         hasMore={hasMore}
       />
