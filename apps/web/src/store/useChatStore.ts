@@ -32,6 +32,7 @@ interface ChatState {
   // Polls
   polls: Poll[];
   addPoll: (poll: Poll) => void;
+  removePoll: (pollId: string) => void;
   updatePoll: (poll: Poll) => void;
   setPolls: (polls: Poll[]) => void;
 
@@ -89,6 +90,8 @@ export const useChatStore = create<ChatState>((set) => ({
   // Polls
   polls: [],
   addPoll: (poll) => set((state) => ({ polls: [...state.polls, poll] })),
+  removePoll: (pollId) =>
+    set((state) => ({ polls: state.polls.filter((p) => p.id !== pollId) })),
   updatePoll: (poll) =>
     set((state) => ({
       polls: state.polls.map((p) => (p.id === poll.id ? poll : p)),

@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Document } from 'mongoose';
+import { POLL_VOTE_MINUTES } from '@campus-chat/shared';
 
 export interface IPollOption {
   id: string;
@@ -35,11 +36,12 @@ const pollSchema = new Schema<IPoll>(
     createdByName: { type: String, required: true },
     isClosed: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
-    expiresAt: { type: Date, default: () => new Date(Date.now() + 5 * 60 * 1000) },
+    expiresAt: { type: Date, default: () => new Date(Date.now() + POLL_VOTE_MINUTES * 60 * 1000) },
   },
   { timestamps: false },
 );
 
 pollSchema.index({ roomId: 1, createdAt: -1 });
+pollSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const Poll = mongoose.model<IPoll>('Poll', pollSchema);

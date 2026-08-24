@@ -11,10 +11,16 @@ export function useExpiryTimer() {
     timerRef.current = setInterval(() => {
       const now = Date.now();
       const state = useChatStore.getState();
-      const expired = state.messages.filter((m) => new Date(m.expiresAt).getTime() <= now);
+      const expiredMessages = state.messages.filter((m) => new Date(m.expiresAt).getTime() <= now);
 
-      if (expired.length > 0) {
-        expired.forEach((m) => state.removeMessage(m.id));
+      if (expiredMessages.length > 0) {
+        expiredMessages.forEach((m) => state.removeMessage(m.id));
+      }
+
+      const expiredPolls = state.polls.filter((p) => new Date(p.expiresAt).getTime() <= now);
+
+      if (expiredPolls.length > 0) {
+        expiredPolls.forEach((p) => state.removePoll(p.id));
       }
     }, 2000);
 

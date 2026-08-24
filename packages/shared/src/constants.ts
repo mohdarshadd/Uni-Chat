@@ -102,6 +102,7 @@ export const ADJECTIVES = [
 ];
 
 export const MESSAGE_TTL_MINUTES = 10;
+export const POLL_VOTE_MINUTES = 10;
 export const MAX_MESSAGE_LENGTH = 1000;
 export const MAX_DISPLAY_NAME_LENGTH = 30;
 export const MESSAGES_PER_PAGE = 50;
