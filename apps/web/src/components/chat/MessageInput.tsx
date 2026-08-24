@@ -46,7 +46,8 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
   useEffect(() => {
     if (!showEmoji && !showGif) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('[data-picker]')) return;
+      const el = e.target as HTMLElement;
+      if (el.closest('[data-picker]') || el.closest('[data-picker-toggle]')) return;
       setShowEmoji(false);
       setShowGif(false);
     };
@@ -128,6 +129,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             </button>
             <button
               onClick={() => { setShowEmoji(false); setShowGif(!showGif); }}
+              data-picker-toggle
               className={cn(
                 'rounded-lg p-1.5 transition-colors',
                 showGif
@@ -141,6 +143,7 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             </button>
             <button
               onClick={() => { setShowGif(false); setShowEmoji(!showEmoji); }}
+              data-picker-toggle
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text)] transition-colors"
             >
               <Smile size={18} />
