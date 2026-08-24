@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, ImageOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '../../lib/utils';
 
 interface GifResult {
   id: string;
@@ -15,6 +16,49 @@ interface GifPickerProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (gif: GifResult) => void;
+}
+
+function GifTile({ gif, onSelect }: { gif: GifResult; onSelect: (gif: GifResult) => void }) {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+  return (
+    <button
+      onClick={() => {
+        if (status === 'loaded') onSelect(gif);
+      }}
+      className="group relative aspect-video overflow-hidden rounded-lg bg-[var(--color-bg-secondary)] transition-transform hover:scale-105"
+      disabled={status !== 'loaded'}
+    >
+      {status !== 'error' ? (
+        <img
+          src={gif.previewUrl}
+          alt={gif.title || 'GIF'}
+          loading="lazy"
+          onLoad={() => setStatus('loaded')}
+          onError={() => setStatus('error')}
+          className={cn(
+            'h-full w-full object-cover',
+            status === 'loading' ? 'opacity-0' : 'opacity-100',
+          )}
+        />
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-[var(--color-text-secondary)]">
+          <ImageOff size={16} />
+          <span className="text-[10px]">Failed</span>
+        </div>
+      )}
+      {status === 'loading' ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+        </div>
+      ) : null}
+      {gif.title && status === 'loaded' ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <p className="truncate text-xs text-white">{gif.title}</p>
+        </div>
+      ) : null}
+    </button>
+  );
 }
 
 const GIPHY_API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
@@ -121,26 +165,7 @@ export function GifPicker({ isOpen, onClose, onSelect }: GifPickerProps) {
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 {results.map((gif) => (
-                  <button
-                    key={gif.id}
-                    onClick={() => {
-                      onSelect(gif);
-                      onClose();
-                    }}
-                    className="group relative overflow-hidden rounded-lg bg-[var(--color-bg-secondary)] transition-transform hover:scale-105"
-                  >
-                    <img
-                      src={gif.previewUrl}
-                      alt={gif.title || 'GIF'}
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                    {gif.title ? (
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
-                        <p className="truncate text-xs text-white">{gif.title}</p>
-                      </div>
-                    ) : null}
-                  </button>
+                  <GifTile key={gif.id} gif={gif} onSelect={onSelect} />
                 ))}
               </div>
             )}
