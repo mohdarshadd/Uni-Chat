@@ -1,5 +1,5 @@
-import { memo, useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { memo, useState, useEffect, useRef } from 'react';
+import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { Heart, Copy, Trash2, Reply, Clock, Flag } from 'lucide-react';
 import type { Message } from '@campus-chat/shared';
 import { cn, getTime, getAvatarEmoji } from '../../lib/utils';
@@ -59,6 +59,8 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [showBurst, setShowBurst] = useState(false);
+  const lastTapRef = useRef(0);
   const sessionId = useChatStore((s) => s.sessionId);
   const messages = useChatStore((s) => s.messages);
   const isOwn = message.senderId === sessionId;
@@ -83,6 +85,25 @@ export const MessageBubble = memo(function MessageBubble({
     navigator.clipboard.writeText(message.content);
   };
 
+  const handleDoubleTapLike = () => {
+    const alreadyLiked = message.likes.includes(sessionId ?? '');
+    setShowBurst(true);
+    setTimeout(() => setShowBurst(false), 700);
+    if (!alreadyLiked) onLike(message.id);
+  };
+
+  const handleContainerTap = (e: MouseEvent | TouchEvent | PointerEvent) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('button')) return;
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      lastTapRef.current = 0;
+      handleDoubleTapLike();
+    } else {
+      lastTapRef.current = now;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10, scale: 0.98 }}
@@ -98,6 +119,7 @@ export const MessageBubble = memo(function MessageBubble({
           onReply(message);
         }
       }}
+      onTap={handleContainerTap}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
@@ -114,6 +136,26 @@ export const MessageBubble = memo(function MessageBubble({
       >
         <Reply size={18} />
       </motion.span>
+
+      <AnimatePresence>
+        {showBurst ? (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1.15, opacity: 1 }}
+            exit={{ scale: 1.7, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
+          >
+            <Heart
+              size={44}
+              className={cn(
+                'drop-shadow-lg',
+                message.likes.includes(sessionId ?? '') ? 'fill-red-500 text-red-500' : 'text-red-500',
+              )}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <div
         className={cn(
