@@ -51,7 +51,7 @@ export function CreatePollModal({ isOpen, onClose, onCreate }: CreatePollModalPr
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="glass w-full max-w-md rounded-xl border border-[var(--color-border)] p-6"
+            className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-6 shadow-2xl"
           >
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
