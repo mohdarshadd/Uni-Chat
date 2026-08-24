@@ -114,19 +114,11 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             maxLength={MAX_MESSAGE_LENGTH}
-            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-3 pr-12 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-secondary)] focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+            className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] py-3 pl-4 pr-28 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-secondary)] focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             disabled={isLoading}
           />
 
-          <div className="absolute bottom-2.5 right-2 flex items-center gap-1">
-            <span className={cn(
-              'text-[11px]',
-              content.length > MAX_MESSAGE_LENGTH * 0.9
-                ? 'text-red-500'
-                : 'text-[var(--color-text-secondary)]'
-            )}>
-              {content.length}/{MAX_MESSAGE_LENGTH}
-            </span>
+          <div className="absolute bottom-2 right-1.5 flex items-center gap-0.5">
             <button
               onClick={onCreatePoll}
               className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg)] hover:text-brand-500 transition-colors"
@@ -165,6 +157,17 @@ export function MessageInput({ onSend, onSendGif, onCreatePoll, replyTo, onClear
         >
           <Send size={18} />
         </Button>
+      </div>
+
+      <div className="mt-1 flex h-4 justify-end">
+        <span className={cn(
+          'text-[11px]',
+          content.length > MAX_MESSAGE_LENGTH * 0.9
+            ? 'text-red-500'
+            : 'text-[var(--color-text-secondary)]'
+        )}>
+          {content.length}/{MAX_MESSAGE_LENGTH}
+        </span>
       </div>
 
       <GifPicker

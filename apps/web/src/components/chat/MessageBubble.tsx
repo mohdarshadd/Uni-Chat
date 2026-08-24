@@ -141,7 +141,7 @@ export const MessageBubble = memo(function MessageBubble({
         ) : (
           <div
             className={cn(
-              'rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
+              'max-w-full rounded-2xl px-3.5 py-2 text-sm leading-relaxed [overflow-wrap:anywhere]',
               isOwn
                 ? 'bg-brand-500 text-[var(--color-on-accent)] rounded-tr-md'
                 : 'bg-[var(--color-bg-secondary)] text-[var(--color-text)] rounded-tl-md',
