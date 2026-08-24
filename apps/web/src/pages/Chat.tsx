@@ -122,9 +122,9 @@ export function Chat() {
       />
 
       {announcements.length > 0 ? (
-        <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex flex-col items-center gap-1">
+        <div className="z-20 flex flex-col items-center gap-1 border-b border-[var(--color-border)] bg-[var(--color-bg)]">
           {announcements.map((ann) => (
-            <div key={ann.id} className="pointer-events-auto w-full max-w-xl">
+            <div key={ann.id} className="w-full max-w-xl">
               <AnnouncementBubble
                 announcement={ann}
                 onDismiss={dismissAnnouncement}

@@ -14,7 +14,7 @@ interface AnnouncementBubbleProps {
 
 export function AnnouncementBubble({ announcement, onDismiss }: AnnouncementBubbleProps) {
   return (
-    <div className="mx-4 my-2 overflow-hidden rounded-xl border border-orange-500/30 bg-gradient-to-r from-orange-500/20 via-[var(--color-bg-secondary)] to-[var(--color-bg-secondary)] shadow-xl">
+    <div className="mx-4 my-2 overflow-hidden rounded-xl border border-orange-500/30 border-l-4 border-l-orange-500 bg-[var(--color-bg-secondary)] shadow-lg">
       <div className="flex items-start gap-3 p-4">
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-orange-500/20">
           <Megaphone size={16} className="text-orange-500" />
