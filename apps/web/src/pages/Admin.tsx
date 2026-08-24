@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  MessageSquare, Users, Building2, Flag, Activity,
-  TrendingUp, BarChart3, Settings, Megaphone, CheckCircle, Lock, Search,
+  MessageSquare, Users, Building2, Flag,
+  TrendingUp, Activity, Megaphone, CheckCircle, Lock, Search,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Button } from '../components/ui/Button';
+import { AdminLayout } from '../components/admin/AdminLayout';
 
 interface Analytics {
   totalMessages: number;
@@ -125,34 +126,9 @@ export function Admin() {
     );
   }
 
-  const navItems = [
-    { label: 'Dashboard', path: '/admin', icon: BarChart3 },
-    { label: 'Reports', path: '/admin/reports', icon: Flag },
-    { label: 'Universities', path: '/admin/universities', icon: Building2 },
-  ];
-
   return (
-    <div className="flex min-h-screen bg-[var(--color-bg)]">
-      <aside className="glass w-64 border-r border-[var(--color-border)] p-4">
-        <div className="mb-8 flex items-center gap-2">
-          <Settings className="h-5 w-5 text-brand-500" />
-          <span className="font-semibold text-[var(--color-text)]">Admin Panel</span>
-        </div>
-        <nav className="space-y-1">
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text)] transition-colors"
-            >
-              <item.icon size={18} />
-              {item.label}
-            </button>
-          ))}
-        </nav>
-      </aside>
-
-      <main className="flex-1 space-y-8 p-8">
+    <AdminLayout activePath="/admin">
+      <div className="space-y-6 lg:space-y-8">
         <h1 className="text-2xl font-bold text-[var(--color-text)]">Dashboard</h1>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -213,7 +189,7 @@ export function Admin() {
               />
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Button
                 onClick={() => {
                   if (!annRoomId || !annContent.trim() || annSending) return;
@@ -241,7 +217,7 @@ export function Admin() {
             </div>
           </div>
         </section>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }
