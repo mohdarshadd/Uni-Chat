@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { Heart, Copy, Trash2, Reply, Clock, Flag } from 'lucide-react';
 import type { Message } from '@campus-chat/shared';
 import { cn, getTime, getAvatarEmoji } from '../../lib/utils';
@@ -62,6 +62,17 @@ export const MessageBubble = memo(function MessageBubble({
   const sessionId = useChatStore((s) => s.sessionId);
   const messages = useChatStore((s) => s.messages);
   const isOwn = message.senderId === sessionId;
+  const x = useMotionValue(0);
+  const replyHintOpacity = useTransform(
+    x,
+    isOwn ? [-70, -20] : [20, 70],
+    isOwn ? [1, 0] : [0, 1],
+  );
+  const replyHintX = useTransform(
+    x,
+    isOwn ? [-70, -20] : [20, 70],
+    isOwn ? [-6, -18] : [18, 6],
+  );
   const countdown = useCountdown(message.expiresAt);
   const isSingleEmoji = message.contentType !== 'gif' && isSingleEmojiMessage(message.content);
   const repliedMessage = message.replyTo
@@ -77,6 +88,16 @@ export const MessageBubble = memo(function MessageBubble({
       initial={{ opacity: 0, y: 10, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+      drag="x"
+      dragDirectionLock
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.45}
+      style={{ x }}
+      onDragEnd={(_, info) => {
+        if (isOwn ? info.offset.x < -70 : info.offset.x > 70) {
+          onReply(message);
+        }
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
@@ -84,6 +105,16 @@ export const MessageBubble = memo(function MessageBubble({
         isOwn ? 'flex-row-reverse' : '',
       )}
     >
+      <motion.span
+        style={{ opacity: replyHintOpacity, x: replyHintX, translateX: '-50%' }}
+        className={cn(
+          'pointer-events-none absolute top-1/2 -translate-y-1/2 z-10 text-brand-500',
+          isOwn ? 'right-6' : 'left-6',
+        )}
+      >
+        <Reply size={18} />
+      </motion.span>
+
       <div
         className={cn(
           'flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-base',
