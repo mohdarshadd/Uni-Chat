@@ -1,10 +1,22 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 import { PollBubble } from './PollBubble';
 import type { Message, Poll } from '@campus-chat/shared';
 import { useChatStore } from '../../store/useChatStore';
+
+type TimelineItem =
+  | { kind: 'message'; ts: number; message: Message }
+  | { kind: 'poll'; ts: number; poll: Poll };
+
+function buildTimeline(messages: Message[], polls: Poll[]): TimelineItem[] {
+  const items: TimelineItem[] = [
+    ...messages.map((m) => ({ kind: 'message' as const, ts: new Date(m.createdAt).getTime(), message: m })),
+    ...polls.map((p) => ({ kind: 'poll' as const, ts: new Date(p.createdAt).getTime(), poll: p })),
+  ];
+  return items.sort((a, b) => a.ts - b.ts);
+}
 
 interface MessageListProps {
   messages: Message[];
@@ -47,6 +59,11 @@ export function MessageList({
     }
   }, [hasMore, onLoadMore]);
 
+  const timeline = useMemo(
+    () => buildTimeline(messages, polls),
+    [messages, polls],
+  );
+
   return (
     <div
       ref={containerRef}
@@ -59,23 +76,22 @@ export function MessageList({
         </div>
       ) : null}
 
-      {/* Messages */}
+      {/* Messages & Polls (chronological) */}
       <AnimatePresence initial={false}>
-        {messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            onReply={onReply}
-            onDelete={onDelete}
-            onLike={onLike}
-          />
-        ))}
+        {timeline.map((item) =>
+          item.kind === 'message' ? (
+            <MessageBubble
+              key={item.message.id}
+              message={item.message}
+              onReply={onReply}
+              onDelete={onDelete}
+              onLike={onLike}
+            />
+          ) : (
+            <PollBubble key={item.poll.id} poll={item.poll} onVote={onVote} />
+          ),
+        )}
       </AnimatePresence>
-
-      {/* Polls */}
-      {polls.map((poll) => (
-        <PollBubble key={poll.id} poll={poll} onVote={onVote} />
-      ))}
 
       {typingUsers.length > 0 ? (
         <TypingIndicator users={typingUsers} />
