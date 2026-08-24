@@ -224,6 +224,15 @@ export const MessageBubble = memo(function MessageBubble({
           </div>
         )}
 
+        {message.likes.length > 0 ? (
+          <div className={cn('mt-0.5 flex', isOwn ? 'justify-end' : 'justify-start')}>
+            <span className="flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-500">
+              <Heart size={10} fill="currentColor" />
+              {message.likes.length}
+            </span>
+          </div>
+        ) : null}
+
         <div className={cn('mt-1 flex items-center gap-2', isHovered ? 'opacity-100' : 'opacity-0', 'transition-opacity')}>
           <button
             onClick={() => onReply(message)}
