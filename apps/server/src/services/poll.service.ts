@@ -17,6 +17,7 @@ export interface PollResponse {
   isClosed: boolean;
   createdAt: string;
   expiresAt: string;
+  disappearsAt: string;
 }
 
 function toResponse(poll: IPoll): PollResponse {
@@ -36,6 +37,7 @@ function toResponse(poll: IPoll): PollResponse {
     isClosed: poll.isClosed,
     createdAt: poll.createdAt.toISOString(),
     expiresAt: poll.expiresAt.toISOString(),
+    disappearsAt: poll.disappearsAt.toISOString(),
   };
 }
 
@@ -93,7 +95,10 @@ export async function votePoll(
 }
 
 export async function getRoomPolls(roomId: string): Promise<PollResponse[]> {
-  const polls = await Poll.find({ roomId })
+  const polls = await Poll.find({
+    roomId,
+    disappearsAt: { $gt: new Date() },
+  })
     .sort({ createdAt: -1 })
     .limit(20)
     .lean();

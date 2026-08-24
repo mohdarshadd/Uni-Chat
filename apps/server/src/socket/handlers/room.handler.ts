@@ -2,6 +2,7 @@ import type { Server, Socket } from 'socket.io';
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '@campus-chat/shared';
 import { University } from '../../models/University.js';
 import { getMessages } from '../../services/message.service.js';
+import { getRoomPolls } from '../../services/poll.service.js';
 import { getOnlineUsers, broadcastRoomMembers } from '../presence.js';
 
 export function registerRoomHandlers(
@@ -21,9 +22,10 @@ export function registerRoomHandlers(
 
     ack({ success: true });
 
-    const [universityDoc, messages, users] = await Promise.all([
+    const [universityDoc, messages, polls, users] = await Promise.all([
       University.findById(universityId).lean(),
       getMessages(universityId),
+      getRoomPolls(universityId),
       getOnlineUsers(io, universityId),
     ]);
 
@@ -40,6 +42,7 @@ export function registerRoomHandlers(
       },
       users,
       messages,
+      polls,
       onlineCount: users.length,
     });
 

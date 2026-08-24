@@ -27,6 +27,7 @@ export interface Poll {
   isClosed: boolean;
   createdAt: string;
   expiresAt: string;
+  disappearsAt: string;
 }
 
 export interface Message {

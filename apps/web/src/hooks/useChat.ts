@@ -29,8 +29,7 @@ export function useChat() {
     addPoll,
     updatePoll,
     setPolls,
-    announcements,
-    addAnnouncement,
+    announcements,    addAnnouncement,
     setAnnouncements,
   } = useChatStore();
 
@@ -112,6 +111,7 @@ export function useChat() {
       setUniversity(data.university);
       setUsers(data.users, data.onlineCount);
       setMessages(data.messages);
+      setPolls(data.polls ?? []);
       localStorage.setItem('lastRoom', JSON.stringify({ id: data.university.id, name: data.university.name }));
     });
 
@@ -190,7 +190,7 @@ export function useChat() {
       socket.off('announcement:new');
       socket.off('typing:update');
     };
-  }, [universityId, doJoin, setConnected, setUniversity, setUsers, setMessages, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
+  }, [universityId, doJoin, setConnected, setUniversity, setUsers, setMessages, setPolls, addMessage, removeMessage, updateMessageLikes, setTypingUsers, addPoll, updatePoll, addAnnouncement]);
 
   const ensureSocketReady = useCallback(async (): Promise<boolean> => {
     const socket = getSocket();

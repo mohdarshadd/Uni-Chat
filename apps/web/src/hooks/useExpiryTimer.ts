@@ -17,7 +17,7 @@ export function useExpiryTimer() {
         expiredMessages.forEach((m) => state.removeMessage(m.id));
       }
 
-      const expiredPolls = state.polls.filter((p) => new Date(p.expiresAt).getTime() <= now);
+      const expiredPolls = state.polls.filter((p) => new Date(p.disappearsAt).getTime() <= now);
 
       if (expiredPolls.length > 0) {
         expiredPolls.forEach((p) => state.removePoll(p.id));

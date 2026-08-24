@@ -31,6 +31,7 @@ export interface ServerToClientEvents {
     university: University;
     users: User[];
     messages: Message[];
+    polls: Poll[];
     onlineCount: number;
   }) => void;
   'room:members': (data: { users: User[]; onlineCount: number }) => void;
